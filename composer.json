@@ -1,6 +1,7 @@
 {
     "require-dev": {
-        "wp-coding-standards/wpcs": "^3.1"
+        "wp-coding-standards/wpcs": "2025-10-31-1000",
+        "phpcsstandards/php_codesniffer": "^4.0"
     },
     "config": {
         "allow-plugins": {
