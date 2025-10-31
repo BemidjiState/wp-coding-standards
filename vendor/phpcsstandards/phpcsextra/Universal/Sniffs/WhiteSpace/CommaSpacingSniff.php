@@ -320,7 +320,13 @@ final class CommaSpacingSniff implements Sniff
      */
     private function escapePlaceholders($text)
     {
-        return \preg_replace('`(?:^|[^%])(%)(?:[^%]|$)`', '%%', \trim($text));
+        $escapeSinglePercentSign = function ($text) {
+            return \preg_replace('`(^|[^%])%([^%]|$)`', '\1%%\2', \trim($text));
+        };
+
+        // We need to "double" escape to make sure chars involved in the `\2` match will
+        // be taken into account for the decision on whether or not to escape the char _after_ that.
+        return $escapeSinglePercentSign($escapeSinglePercentSign($text));
     }
 
     /**
@@ -357,6 +363,9 @@ final class CommaSpacingSniff implements Sniff
                 case \T_FN:
                     return 'InFunctionDeclaration';
 
+                case \T_USE:
+                    return 'InClosureUse';
+
                 case \T_DECLARE:
                     return 'InDeclare';
 
@@ -365,7 +374,7 @@ final class CommaSpacingSniff implements Sniff
                 case \T_UNSET:
                     return 'InFunctionCall';
 
-                // Long array, long list, isset, unset, empty, exit, eval, control structures.
+                // Long array, long list, empty, exit, eval, control structures.
                 default:
                     return '';
             }
@@ -378,9 +387,6 @@ final class CommaSpacingSniff implements Sniff
         }
 
         switch ($tokens[$prevNonEmpty]['code']) {
-            case \T_USE:
-                return 'InClosureUse';
-
             case \T_VARIABLE:
             case \T_SELF:
             case \T_STATIC:
