@@ -4,7 +4,8 @@
         "phpcsstandards/php_codesniffer": "^4.0",
         "phpstan/phpstan": "^1.12",
         "phpstan/extension-installer": "^1.3",
-        "szepeviktor/phpstan-wordpress": "^1.3"
+        "szepeviktor/phpstan-wordpress": "^1.3",
+        "php-stubs/acf-pro-stubs": "^6.0"
     },
     "config": {
         "allow-plugins": {
