@@ -1,11 +1,24 @@
 {
-  "name": "@bsu/wp-coding-standards",
-  "version": "2025.10.31",
-  "description": "WordPress Coding Standards",
-  "author": "",
-  "license": "",
-  "repository": {
-    "type": "git",
-    "url": "git+https://bitbucket.bemidjistate.edu/scm/npm/wp-coding-standards.git"
-  }
+	"name": "@bsu/wp-coding-standards",
+	"version": "1.0.0",
+	"description": "PHP tool binaries for BSU WordPress development — ships PHPCS, WPCS, and PHPStan",
+	"author": "BSU|NTC Web Services",
+	"license": "Copyright Web Services, Bemidji State University - All Rights Reserved. Unauthorized copying of any files or code in this package, via any medium is strictly prohibited.",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/BemidjiState/wp-coding-standards.git"
+	},
+	"homepage": "https://www.bemidjistate.edu",
+	"engines": {
+		"node": ">=24.12",
+		"npm": ">=11.6"
+	},
+	"scripts": {
+		"prepare": "husky"
+	},
+	"devDependencies": {
+		"@commitlint/cli": "20.5.3",
+		"@commitlint/config-conventional": "20.5.3",
+		"husky": "9.1.7"
+	}
 }

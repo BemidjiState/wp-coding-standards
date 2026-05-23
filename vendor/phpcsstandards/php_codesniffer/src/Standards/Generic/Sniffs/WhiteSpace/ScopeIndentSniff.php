@@ -1134,15 +1134,6 @@ class ScopeIndentSniff implements Sniff
                 }
 
                 $condition = $tokens[$tokens[$i]['scope_condition']]['code'];
-                if ($condition === T_FN) {
-                    if ($this->debug === true) {
-                        $line = $tokens[$tokens[$i]['scope_condition']]['line'];
-                        StatusWriter::write("* ignoring arrow function on line $line *");
-                    }
-
-                    $i = $closer;
-                    continue;
-                }
 
                 if (isset(Tokens::SCOPE_OPENERS[$condition]) === true
                     && in_array($condition, $this->nonIndentingScopes, true) === false
@@ -1175,14 +1166,15 @@ class ScopeIndentSniff implements Sniff
                 }
             }
 
-            // Closing an anon class, closure, or match.
+            // Closing an anon class, closure, match, or arrow function.
             // Each may be returned, which can confuse control structures that
             // use return as a closer, like CASE statements.
             if (isset($tokens[$i]['scope_condition']) === true
                 && $tokens[$i]['scope_closer'] === $i
                 && ($tokens[$tokens[$i]['scope_condition']]['code'] === T_CLOSURE
                 || $tokens[$tokens[$i]['scope_condition']]['code'] === T_ANON_CLASS
-                || $tokens[$tokens[$i]['scope_condition']]['code'] === T_MATCH)
+                || $tokens[$tokens[$i]['scope_condition']]['code'] === T_MATCH
+                || $tokens[$tokens[$i]['scope_condition']]['code'] === T_FN)
             ) {
                 if ($this->debug === true) {
                     $type = str_replace('_', ' ', strtolower(substr($tokens[$tokens[$i]['scope_condition']]['type'], 2)));

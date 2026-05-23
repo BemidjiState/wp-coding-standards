@@ -145,7 +145,11 @@ class NonExecutableCodeSniff implements Sniff
                 if ($next !== false) {
                     $lastLine = $tokens[$end]['line'];
                     for ($i = ($stackPtr + 1); $i < $next; $i++) {
-                        if (isset(Tokens::EMPTY_TOKENS[$tokens[$i]['code']]) === true) {
+                        if (isset(Tokens::EMPTY_TOKENS[$tokens[$i]['code']]) === true
+                            || $tokens[$i]['code'] === T_OPEN_TAG
+                            || $tokens[$i]['code'] === T_CLOSE_TAG
+                            || ($tokens[$i]['code'] === T_INLINE_HTML && trim($tokens[$i]['content']) === '')
+                        ) {
                             continue;
                         }
 

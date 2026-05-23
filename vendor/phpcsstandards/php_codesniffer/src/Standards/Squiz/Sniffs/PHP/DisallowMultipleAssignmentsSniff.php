@@ -173,7 +173,6 @@ class DisallowMultipleAssignmentsSniff implements Sniff
                 T_IF     => T_IF,
                 T_ELSEIF => T_ELSEIF,
                 T_SWITCH => T_SWITCH,
-                T_CASE   => T_CASE,
                 T_FOR    => T_FOR,
                 T_MATCH  => T_MATCH,
             ];

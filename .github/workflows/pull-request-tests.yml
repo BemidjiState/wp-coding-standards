@@ -1,0 +1,69 @@
+name: "CI: Pull Request Validation"
+
+on:
+  pull_request:
+    branches:
+      - main
+      - release
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+
+concurrency:
+  group: "${{ github.ref }}-${{ github.workflow }}"
+  cancel-in-progress: false
+
+jobs:
+
+  validate-pr-title:
+    if: github.base_ref != github.event.repository.default_branch
+    name: Validate PR Title
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: read
+
+    steps:
+      - name: Check PR Title against Conventional Commit spec
+        uses: amannn/action-semantic-pull-request@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  dependency-tests:
+    name: Verify PHP tool binaries
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+
+    steps:
+
+      - name: Checkout source
+        uses: actions/checkout@v6
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          tools: composer
+          coverage: none
+
+      - name: Cache Composer dependencies
+        id: cache-composer
+        uses: actions/cache@v5
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+
+      - name: Install Composer dependencies
+        if: steps.cache-composer.outputs.cache-hit != 'true'
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Verify phpcs binary
+        run: vendor/bin/phpcs --version
+
+      - name: Verify phpstan binary
+        run: vendor/bin/phpstan --version

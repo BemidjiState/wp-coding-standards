@@ -447,7 +447,8 @@ abstract class Tokenizer
                             $lineIgnoring = IgnoreList::getNewInstanceFrom($ignoring);
 
                             foreach ($parts as $sniffCode) {
-                                $ignoreRules[trim($sniffCode)] = true;
+                                $sniffCode = trim($sniffCode);
+                                $ignoreRules[$sniffCode] = true;
                                 $lineIgnoring->set($sniffCode, true);
                             }
                         }

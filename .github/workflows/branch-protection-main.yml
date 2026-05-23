@@ -1,0 +1,18 @@
+name: "Policy: Require release → main"
+
+on:
+  pull_request:
+    branches:
+      - main  # The branch to protect.
+
+concurrency:
+  group: "${{ github.ref }}-${{ github.workflow }}"
+  cancel-in-progress: false
+
+jobs:
+  call-versioning:
+    permissions:
+      contents: read
+    uses: BemidjiState/.github/.github/workflows/branch-protection-warning.yml@1.0.9
+    with:
+      primary_branch: 'main'

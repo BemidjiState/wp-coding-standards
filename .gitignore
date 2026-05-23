@@ -1,0 +1,9 @@
+# Editor & OS
+*.sublime-workspace
+.DS_Store
+
+# Node
+node_modules
+
+# Husky internals
+.husky/_/

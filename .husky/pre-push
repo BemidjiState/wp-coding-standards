@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+# --- pre-push hook ---
+#
+# Prevent direct pushes to main. All changes to main must go through a pull
+# request from the release branch. Versioning and releases are handled
+# automatically by GitHub Actions on merge.
+
+. "$(dirname "$0")/bin/dependency-check.sh"
+
+branch=$(git symbolic-ref HEAD 2>/dev/null | sed 's|refs/heads/||')
+
+if [ "$branch" = "main" ] || [ "$branch" = "release" ]; then
+	echo ""
+	echo "ERROR: Direct pushes to '$branch' are not allowed."
+	echo "Open a pull request instead."
+	echo ""
+	exit 1
+fi
