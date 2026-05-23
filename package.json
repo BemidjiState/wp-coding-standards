@@ -1,6 +1,6 @@
 {
 	"name": "@bsu/wp-coding-standards",
-	"version": "3.2.0",
+	"version": "3.2.1",
 	"description": "PHP tool binaries for BSU WordPress development \u2014 ships PHPCS, WPCS, and PHPStan",
 	"author": "BSU|NTC Web Services",
 	"license": "Copyright Web Services, Bemidji State University - All Rights Reserved. Unauthorized copying of any files or code in this package, via any medium is strictly prohibited.",
