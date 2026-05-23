@@ -259,6 +259,7 @@ class PHP extends Tokenizer
             'start'  => [
                 T_COLON     => T_COLON,
                 T_SEMICOLON => T_SEMICOLON,
+                T_CLOSE_TAG => T_CLOSE_TAG,
             ],
             'end'    => [
                 T_BREAK    => T_BREAK,
@@ -280,6 +281,7 @@ class PHP extends Tokenizer
             'start'  => [
                 T_COLON     => T_COLON,
                 T_SEMICOLON => T_SEMICOLON,
+                T_CLOSE_TAG => T_CLOSE_TAG,
             ],
             'end'    => [
                 T_BREAK    => T_BREAK,
@@ -1510,15 +1512,11 @@ class PHP extends Tokenizer
                 && strpos($token[1], '#[') === 0
             ) {
                 $subTokens = $this->parsePhpAttribute($tokens, $stackPtr);
-                if ($subTokens !== null) {
-                    array_splice($tokens, $stackPtr, 1, $subTokens);
-                    $numTokens = count($tokens);
+                array_splice($tokens, $stackPtr, 1, $subTokens);
+                $numTokens = count($tokens);
 
-                    $tokenIsArray = true;
-                    $token        = $tokens[$stackPtr];
-                } else {
-                    $token[0] = T_ATTRIBUTE;
-                }
+                $tokenIsArray = true;
+                $token        = $tokens[$stackPtr];
             }
 
             if ($tokenIsArray === true
@@ -2176,6 +2174,24 @@ class PHP extends Tokenizer
                     break;
                 }
 
+                // Handle live coding/parse errors elegantly.
+                // If the "?" is the last non-empty token in the file, we cannot draw a definitive conclusion,
+                // so tokenize as T_INLINE_THEN.
+                if ($i === $numTokens) {
+                    if (PHP_CODESNIFFER_VERBOSITY > 1) {
+                        StatusWriter::write("* token $stackPtr at end of file changed from ? to T_INLINE_THEN", 2);
+                    }
+
+                    $newToken['code'] = T_INLINE_THEN;
+                    $newToken['type'] = 'T_INLINE_THEN';
+
+                    $insideInlineIf[] = $stackPtr;
+
+                    $finalTokens[$newStackPtr] = $newToken;
+                    $newStackPtr++;
+                    continue;
+                }
+
                 /*
                  * This can still be a nullable type or a ternary.
                  * Do additional checking.
@@ -2185,6 +2201,11 @@ class PHP extends Tokenizer
                 $lastSeenNonEmpty = null;
 
                 for ($i = ($stackPtr - 1); $i >= 0; $i--) {
+                    if (isset($tokens[$i]) === false) {
+                        // Ignore skipped tokens (related to PHP 8+ slash/hash comment vs new line retokenization).
+                        continue;
+                    }
+
                     if (is_array($tokens[$i]) === true) {
                         $tokenType = $tokens[$i][0];
                     } else {
@@ -2200,7 +2221,7 @@ class PHP extends Tokenizer
                     }
 
                     if ($prevNonEmpty === null
-                        && @isset(Tokens::EMPTY_TOKENS[$tokenType]) === false
+                        && isset(Tokens::EMPTY_TOKENS[$tokenType]) === false
                     ) {
                         // Found the previous non-empty token.
                         if ($tokenType === ':' || $tokenType === ',' || $tokenType === T_ATTRIBUTE_END) {
@@ -2219,8 +2240,8 @@ class PHP extends Tokenizer
 
                     if ($tokenType === T_FUNCTION
                         || $tokenType === T_FN
-                        || @isset(Tokens::METHOD_MODIFIERS[$tokenType]) === true
-                        || @isset(Tokens::SCOPE_MODIFIERS[$tokenType]) === true
+                        || isset(Tokens::METHOD_MODIFIERS[$tokenType]) === true
+                        || isset(Tokens::SCOPE_MODIFIERS[$tokenType]) === true
                         || $tokenType === T_VAR
                         || $tokenType === T_READONLY
                     ) {
@@ -2243,7 +2264,7 @@ class PHP extends Tokenizer
                         break;
                     }
 
-                    if (@isset(Tokens::EMPTY_TOKENS[$tokenType]) === false) {
+                    if (isset(Tokens::EMPTY_TOKENS[$tokenType]) === false) {
                         $lastSeenNonEmpty = $tokenType;
                     }
                 }
@@ -3984,11 +4005,10 @@ class PHP extends Tokenizer
      * @param array $tokens   The original array of tokens (as returned by token_get_all).
      * @param int   $stackPtr The current position in token array.
      *
-     * @return array|null The array of parsed attribute tokens
+     * @return array The array of parsed attribute tokens
      */
     private function parsePhpAttribute(array &$tokens, int $stackPtr)
     {
-
         $token = $tokens[$stackPtr];
 
         $commentBody = substr($token[1], 2);
@@ -4000,11 +4020,7 @@ class PHP extends Tokenizer
                 && strpos($subToken[1], '#[') === 0
             ) {
                 $reparsed = $this->parsePhpAttribute($subTokens, $i);
-                if ($reparsed !== null) {
-                    array_splice($subTokens, $i, 1, $reparsed);
-                } else {
-                    $subToken[0] = T_ATTRIBUTE;
-                }
+                array_splice($subTokens, $i, 1, $reparsed);
             }
         }
 
@@ -4012,6 +4028,16 @@ class PHP extends Tokenizer
 
         // Go looking for the close bracket.
         $bracketCloser = $this->findCloser($subTokens, 1, '[', ']');
+
+        /*
+         * No closer bracket found, this might be a multi-line attribute,
+         * but it could also be an unfinished attribute (parse error).
+         *
+         * If it is a multi-line attribute, we need to grab a larger part of the code.
+         * If it is a parse error, we need to stick with only handling the line
+         * containing the attribute opener.
+         */
+
         if (PHP_VERSION_ID < 80000 && $bracketCloser === null) {
             foreach (array_slice($tokens, ($stackPtr + 1)) as $token) {
                 if (is_array($token) === true) {
@@ -4021,18 +4047,15 @@ class PHP extends Tokenizer
                 }
             }
 
-            $subTokens = @token_get_all('<?php ' . $commentBody);
-            array_splice($subTokens, 0, 1, [[T_ATTRIBUTE, '#[']]);
+            $newSubTokens = @token_get_all('<?php ' . $commentBody);
+            array_splice($newSubTokens, 0, 1, [[T_ATTRIBUTE, '#[']]);
 
-            $bracketCloser = $this->findCloser($subTokens, 1, '[', ']');
+            $bracketCloser = $this->findCloser($newSubTokens, 1, '[', ']');
             if ($bracketCloser !== null) {
-                array_splice($tokens, ($stackPtr + 1), count($tokens), array_slice($subTokens, ($bracketCloser + 1)));
-                $subTokens = array_slice($subTokens, 0, ($bracketCloser + 1));
+                // We found the closer, overwrite the original $subTokens array.
+                array_splice($tokens, ($stackPtr + 1), count($tokens), array_slice($newSubTokens, ($bracketCloser + 1)));
+                $subTokens = array_slice($newSubTokens, 0, ($bracketCloser + 1));
             }
-        }
-
-        if ($bracketCloser === null) {
-            return null;
         }
 
         return $subTokens;

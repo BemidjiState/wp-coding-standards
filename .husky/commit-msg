@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+# --- commit-msg hook ---
+#
+# Verify PHP and Node.js are available,
+# then run commitlint against the commit message.
+
+# --- Load Dependencies ---
+# Ensure PHP and Node.js via NVM are installed and are in PATH.
+. "$(dirname "$0")/bin/dependency-check.sh"
+
+# --- Run Commitlint to test commit message ---
+npx --no -- commitlint --edit $1

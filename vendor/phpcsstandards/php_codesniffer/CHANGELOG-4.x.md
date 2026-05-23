@@ -2,6 +2,44 @@
 
 The file documents changes to the PHP_CodeSniffer project for the 4.x series of releases.
 
+## [4.0.1] - 2025-11-10
+
+This release includes all improvements and bugfixes from PHP_CodeSniffer [3.13.5].
+
+### Added
+- Runtime support for PHP 8.5. All known PHP 8.5 deprecation notices have been fixed.
+    - Syntax support for new PHP 8.5 features will follow in a future release.
+    - If you find any PHP 8.5 deprecation notices which were missed, please report them.
+
+### Changed
+- The Squiz.ControlStructures.SwitchDeclaration sniff will now flag a PHP close tag as a "wrong opener" and will auto-fix this by inserting a colon. [#1316]
+- Various housekeeping, including improvements to the tests and documentation.
+
+### Fixed
+- 4.x regression [#1277]: bring back whitespace tolerance in `phpcs:ignore` comma-separated rule reference lists.
+    - Note: this bug did not affect `phpcs:disable`/`phpcs:enable` ignore annotations.
+- Fixed bug [#968]: Generic.WhiteSpace.ScopeIndent was reporting false positives - and making incorrect fixes - for lines following a line containing an arrow function.
+    - Thanks to [Soichi Sato][@Soh1121] for the patch.
+- Fixed bug [#1216]: Tokenizer/PHP: added more defensive coding to prevent PHP 8.5 "Using null as an array offset" deprecation notices.
+    - Thanks to [Andrew Lyons][@andrewnicols] for the patch.
+- Fixed bug [#1279]: Tokenizer/PHP: on PHP < 8.0, an unclosed attribute (parse error) could end up removing some tokens from the token stream.
+    - This could lead to false positives and false negative from sniffs, but could also lead to incorrect fixes being made mangling the file under scan.
+- Fixed bug [#1315]: Squiz.ControlStructures.SwitchDeclaration: a number of the fixers would get into fixer conflicts with each other if the code under scan contained multiple statements on a line within a `switch`.
+    - The sniff will now forbid - and auto-fix - multiple statements on one line for `case`/`default` and "case breaking" statements.
+- Fixed bug [#1316]: Tokenizer/PHP: a PHP close tag after a `switch` case condition or after a `default` keyword, was not regarded as a "scope_opener" for the `case`/`default` body.
+- Fixed bug [#1316]: PSR2.ControlStructures.SwitchDeclaration: the `WrongOpener` error is now also auto-fixable if the wrong opener is a PHP close tag.
+- Fixed bug [#1316]: Squiz.PHP.NonExecutableCode would throw false positives when code within a switch control structure would move in and out of PHP.
+
+[3.13.5]: https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/4.x/CHANGELOG-3.x.md#3135---2025-11-04
+
+[#968]:  https://github.com/PHPCSStandards/PHP_CodeSniffer/issues/968
+[#1216]: https://github.com/PHPCSStandards/PHP_CodeSniffer/issues/1216
+[#1277]: https://github.com/PHPCSStandards/PHP_CodeSniffer/issues/1277
+[#1279]: https://github.com/PHPCSStandards/PHP_CodeSniffer/issues/1279
+[#1315]: https://github.com/PHPCSStandards/PHP_CodeSniffer/pull/1315
+[#1316]: https://github.com/PHPCSStandards/PHP_CodeSniffer/pull/1316
+
+
 ## [4.0.0] - 2025-09-16
 
 This release contains breaking changes.
@@ -10,7 +48,7 @@ Upgrade guides for both [ruleset maintainers/end-users][wiki-upgrade-4.0-end-use
 
 You are strongly encouraged to read the upgrade guide applicable to your situation before upgrading.
 
-This release includes all improvements and bugfixes from PHP_CodeSniffer [3.13.3] and  [3.13.4].
+This release includes all improvements and bugfixes from PHP_CodeSniffer [4.0.0-beta1], [4.0.0-RC1], [3.13.3] and [3.13.4].
 
 ### Changed
 - Tokenizer/PHP: fully qualified `exit`/`die`/`true`/`false`/`null` will be tokenized as the keyword token and the token `'content'` will include the leading backslash. [#1201]
@@ -31,8 +69,9 @@ This release includes all improvements and bugfixes from PHP_CodeSniffer [3.13.3
     - If you contribute to PHP_CodeSniffer, you will need to update your local git clone.
     - If you develop against PHP_CodeSniffer and run your tests against dev branches of PHPCS, you will need to update your workflows.
 
-[3.13.3]: https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/4.x/CHANGELOG-3.x.md#3133---2025-09-04
-[3.13.4]: https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/4.x/CHANGELOG-3.x.md#3134---2025-09-05
+[3.13.3]:    https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/HEAD/CHANGELOG-3.x.md#3133---2025-09-04
+[3.13.4]:    https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/HEAD/CHANGELOG-3.x.md#3134---2025-09-05
+[4.0.0-RC1]: https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/HEAD/CHANGELOG-4.x.md#400rc1---2025-06-18
 
 [#1082]: https://github.com/PHPCSStandards/PHP_CodeSniffer/issues/1082
 [#1172]: https://github.com/PHPCSStandards/PHP_CodeSniffer/pull/1172
@@ -45,11 +84,10 @@ This release includes all improvements and bugfixes from PHP_CodeSniffer [3.13.3
 
 ## [4.0.0RC1] - 2025-06-18
 
-This release includes all improvements and bugfixes from PHP_CodeSniffer [3.13.1] and [3.13.2].
+This release includes all improvements and bugfixes from PHP_CodeSniffer [4.0.0-beta1], [3.13.1] and [3.13.2].
 
 ### Changed
 - The error code `Squiz.Functions.FunctionDeclarationArgumentSpacing.SpacingAfterVisbility` has been changed to `Squiz.Functions.FunctionDeclarationArgumentSpacing.SpacingAfterVisibility`. [#1136]
-    - Thanks to [Juliette Reinders Folmer][@jrfnl] for the patch.
 - The following sniff(s) have received efficiency improvements:
     - Generic.ControlStructures.InlineControlStructure
     - Thanks to [Rodrigo Primo][@rodrigoprimo] for the patch.
@@ -58,13 +96,13 @@ This release includes all improvements and bugfixes from PHP_CodeSniffer [3.13.1
 - Fixed bug [#3889][sq-3889] : A selective `phpcs:enable` could sometimes override a later selective `phpcs:ignore`.
     - Thanks to [Brad Jorsch][@anomiex] for the patch
 - Fixed bug [#1128] : missing 'parenthesis_owner' index for T_FUNCTION token on PHP < 7.4 when function is named "fn".
-    - Thanks to [Juliette Reinders Folmer][@jrfnl] for the patch.
 
 ### Other
 - The GPG signature for the PHAR files has been rotated. The new fingerprint is: D91D86963AF3A29B6520462297B02DD8E5071466.
 
-[3.13.1]: https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/HEAD/CHANGELOG-3.x.md#3131---2025-06-13
-[3.13.2]: https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/HEAD/CHANGELOG-3.x.md#3132---2025-06-18
+[3.13.1]:      https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/HEAD/CHANGELOG-3.x.md#3131---2025-06-13
+[3.13.2]:      https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/HEAD/CHANGELOG-3.x.md#3132---2025-06-18
+[4.0.0-beta1]: https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/HEAD/CHANGELOG-4.x.md#400beta1---2025-05-11
 
 [sq-3889]: https://github.com/squizlabs/PHP_CodeSniffer/issues/3889
 [#1128]:   https://github.com/PHPCSStandards/PHP_CodeSniffer/pull/1128
@@ -392,6 +430,7 @@ Special thanks go out to [Dan Wallis][@fredden] and [Rodrigo Primo][@rodrigoprim
 === Link list for release links ====
 -->
 
+[4.0.1]:      https://github.com/PHPCSStandards/PHP_CodeSniffer/compare/4.0.0...4.0.1
 [4.0.0]:      https://github.com/PHPCSStandards/PHP_CodeSniffer/compare/4.0.0RC1...4.0.0
 [4.0.0RC1]:   https://github.com/PHPCSStandards/PHP_CodeSniffer/compare/4.0.0beta1...4.0.0RC1
 [4.0.0beta1]: https://github.com/PHPCSStandards/PHP_CodeSniffer/compare/3.13.0...4.0.0beta1
@@ -401,8 +440,10 @@ Special thanks go out to [Dan Wallis][@fredden] and [Rodrigo Primo][@rodrigoprim
 === Link list for contributor profiles ====
 -->
 
+[@andrewnicols]:        https://github.com/andrewnicols
 [@anomiex]:             https://github.com/anomiex
 [@fredden]:             https://github.com/fredden
 [@gsherwood]:           https://github.com/gsherwood
 [@jrfnl]:               https://github.com/jrfnl
 [@rodrigoprimo]:        https://github.com/rodrigoprimo
+[@Soh1121]:             https://github.com/Soh1121
