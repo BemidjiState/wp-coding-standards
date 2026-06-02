@@ -12,7 +12,7 @@ final class GeneratedConfig
 	public const EXTENSIONS = array (
   'szepeviktor/phpstan-wordpress' => 
   array (
-    'install_path' => '/Users/cp9965pa.b/Dropbox/Sites/repos/bsu-repos/npm/wp-coding-standards2/vendor/szepeviktor/phpstan-wordpress',
+    'install_path' => '/Users/cp9965pa.b/Dropbox/Sites/repos/bsu-repos/npm/wp-coding-standards/vendor/szepeviktor/phpstan-wordpress',
     'relative_install_path' => '../../../szepeviktor/phpstan-wordpress',
     'extra' => 
     array (
@@ -21,8 +21,8 @@ final class GeneratedConfig
         0 => 'extension.neon',
       ),
     ),
-    'version' => 'v1.3.5',
-    'phpstanVersionConstraint' => '>=1.10.31.0-dev, <2.0.0.0-dev',
+    'version' => 'v2.0.3',
+    'phpstanVersionConstraint' => '>=2.0.0.0-dev, <3.0.0.0-dev',
   ),
 );
 
@@ -30,7 +30,7 @@ final class GeneratedConfig
 );
 
 	/** @var string|null */
-	public const PHPSTAN_VERSION_CONSTRAINT = '>=1.10.31.0-dev, <2.0.0.0-dev';
+	public const PHPSTAN_VERSION_CONSTRAINT = '>=2.0.0.0-dev, <3.0.0.0-dev';
 
 	private function __construct()
 	{
