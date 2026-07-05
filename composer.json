@@ -13,5 +13,9 @@
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "phpstan/extension-installer": true
         }
+    },
+    "scripts": {
+        "post-install-cmd": "@php bin/register-bsuwordpresscs.php",
+        "post-update-cmd": "@php bin/register-bsuwordpresscs.php"
     }
 }
