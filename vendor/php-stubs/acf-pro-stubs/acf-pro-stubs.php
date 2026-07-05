@@ -16,7 +16,7 @@ namespace {
          *
          * @var string
          */
-        public $version = '6.5.0';
+        public $version = '6.8.2';
         /**
          * The plugin settings array.
          *
@@ -314,6 +314,24 @@ namespace ACF {
         {
         }
         /**
+         * Clears ACF plugin update transients when ACF is updated.
+         *
+         * This method is hooked to the 'upgrader_process_complete' action and will
+         * delete the 'acf_plugin_updates' transient when the ACF plugin is updated,
+         * ensuring fresh update data is fetched on the next check.
+         *
+         * @since 6.5.1
+         *
+         * @param WP_Upgrader $upgrader_object The upgrader instance.
+         * @param array       $options         Array of update details including:
+         *                                     - 'action' (string) The action performed (e.g., 'update').
+         *                                     - 'type' (string) The type of update (e.g., 'plugin').
+         *                                     - 'plugins' (array) Array of plugin basenames that were updated.
+         */
+        public function clear_transients_on_upgrade($upgrader_object, $options)
+        {
+        }
+        /**
          * Registeres a plugin for updates.
          *
          * @since   5.5.10
@@ -410,11 +428,15 @@ namespace ACF {
         {
         }
         /**
-         * Deletes transients and allows a fresh lookup.
+         * Deletes cached ACF plugin update transients and allows a fresh lookup.
          *
          * @since   5.5.10
+         *
+         * @param   string|false $id Optional. The plugin ID to clear specific plugin info transient.
+         *                           If provided, will delete the 'acf_plugin_info_{id}' transient.
+         *                           Defaults to false.
          */
-        public function refresh_plugins_transient()
+        public function refresh_plugins_transient($id = false)
         {
         }
         /**
@@ -3330,17 +3352,14 @@ namespace {
         {
         }
         /**
-         * get_args
-         *
          * Returns an array of args for this query.
          *
-         * @date    31/7/18
-         * @since   5.7.2
+         * @since 5.7.2
          *
-         * @param   array $request The request args.
-         * @return  array
+         * @param array $request The request args.
+         * @return array
          */
-        function get_args($request)
+        public function get_args($request)
         {
         }
         /**
@@ -3402,17 +3421,14 @@ namespace {
         {
         }
         /**
-         * get_args
-         *
          * Returns an array of args for this query.
          *
-         * @date    31/7/18
-         * @since   5.7.2
+         * @since 5.7.2
          *
-         * @param   array $request The request args.
-         * @return  array
+         * @param array $request The request args.
+         * @return array
          */
-        function get_args($request)
+        public function get_args($request)
         {
         }
         /**
@@ -3428,17 +3444,14 @@ namespace {
         {
         }
         /**
-         * get_results
-         *
          * Returns an array of results for the given args.
          *
-         * @date    31/7/18
          * @since   5.7.2
          *
-         * @param   array args The query args.
-         * @return  array
+         * @param array $args The query args.
+         * @return array
          */
-        function get_results($args)
+        public function get_results($args)
         {
         }
         /**
@@ -3458,15 +3471,14 @@ namespace {
         /**
          * Filters the WP_User_Query search columns.
          *
-         * @date    9/3/20
-         * @since   5.8.8
+         * @since 5.8.8
          *
-         * @param   array         $columns       An array of column names to be searched.
-         * @param   string        $search        The search term.
-         * @param   WP_User_Query $WP_User_Query The WP_User_Query instance.
-         * @return  array
+         * @param array         $columns       An array of column names to be searched.
+         * @param string        $search        The search term.
+         * @param WP_User_Query $WP_User_Query The WP_User_Query instance.
+         * @return array
          */
-        function filter_search_columns($columns, $search, $WP_User_Query)
+        public function filter_search_columns($columns, $search, $WP_User_Query)
         {
         }
     }
@@ -3786,7 +3798,7 @@ namespace {
          * @since 6.1
          *
          * @param integer|string $id The post ID, key, or name.
-         * @return WP_Post|bool The post object, or false on failure.
+         * @return WP_Post|boolean The post object, or false on failure.
          */
         public function get_post_object($id = 0)
         {
@@ -4494,6 +4506,16 @@ namespace {
         {
         }
         /**
+         * Returns the JSON schema for creating this field type.
+         *
+         * @since 6.8.0
+         *
+         * @return array JSON Schema definition for this field type, or an empty array if none exists.
+         */
+        public function get_field_creation_schema() : array
+        {
+        }
+        /**
          * Return the schema array for the REST API.
          *
          * @param array $field
@@ -4539,6 +4561,19 @@ namespace {
          * @return mixed
          */
         public function format_value_for_rest($value, $post_id, array $field)
+        {
+        }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * Override in field type classes to declare supported ranges.
+         * Used to determine valid properties and output formats.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
         {
         }
         /**
@@ -4622,6 +4657,16 @@ namespace {
          * @return  $field - the field array holding all the field options
          */
         function load_field($field)
+        {
+        }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
         {
         }
     }
@@ -4747,6 +4792,16 @@ namespace {
          * @return array
          */
         function get_rest_schema(array $field)
+        {
+        }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
         {
         }
     }
@@ -4941,6 +4996,16 @@ namespace {
         public function get_rest_schema(array $field)
         {
         }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
+        {
+        }
     }
     class acf_field_color_picker extends \acf_field
     {
@@ -4979,7 +5044,7 @@ namespace {
          * @since   3.6
          * @date    23/01/13
          */
-        function render_field($field)
+        public function render_field($field)
         {
         }
         /**
@@ -4996,6 +5061,17 @@ namespace {
         {
         }
         /**
+         * Renders the field settings used in the "Presentation" tab.
+         *
+         * @since 6.0
+         *
+         * @param array $field The field settings array.
+         * @return void
+         */
+        public function render_field_presentation_settings($field)
+        {
+        }
+        /**
          * Format the value for use in templates. At this stage, the value has been loaded from the
          * database and is being returned by an API function such as get_field(), the_field(), etc.
          *
@@ -5007,6 +5083,16 @@ namespace {
          * @return string|array
          */
         public function format_value($value, $post_id, $field)
+        {
+        }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
         {
         }
     }
@@ -5114,6 +5200,31 @@ namespace {
         public function format_value_for_rest($value, $post_id, array $field)
         {
         }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
+        {
+        }
+        /**
+         * Formats the field value for JSON-LD output.
+         *
+         * Converts the stored Ymd format to ISO 8601 date format.
+         *
+         * @since 6.8.0
+         *
+         * @param mixed          $value   The value of the field.
+         * @param integer|string $post_id The ID of the post.
+         * @param array          $field   The field array.
+         * @return string|null ISO 8601 formatted date or null.
+         */
+        public function format_value_for_jsonld($value, $post_id, $field)
+        {
+        }
     }
     class acf_field_date_and_time_picker extends \acf_field
     {
@@ -5205,6 +5316,31 @@ namespace {
         public function get_rest_schema(array $field)
         {
         }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
+        {
+        }
+        /**
+         * Formats the field value for JSON-LD output.
+         *
+         * Converts the stored Y-m-d H:i:s format to ISO 8601 datetime format.
+         *
+         * @since 6.8.0
+         *
+         * @param mixed          $value   The value of the field.
+         * @param integer|string $post_id The ID of the post.
+         * @param array          $field   The field array.
+         * @return string|null ISO 8601 formatted datetime or null.
+         */
+        public function format_value_for_jsonld($value, $post_id, $field)
+        {
+        }
     }
     class acf_field_email extends \acf_field
     {
@@ -5278,6 +5414,16 @@ namespace {
          * @return array
          */
         public function get_rest_schema(array $field)
+        {
+        }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
         {
         }
     }
@@ -5436,6 +5582,29 @@ namespace {
         public function format_value_for_rest($value, $post_id, array $field)
         {
         }
+        /**
+         * Formats the field value for JSON-LD output.
+         *
+         * @since 6.8.0
+         *
+         * @param mixed          $value   The value of the field.
+         * @param integer|string $post_id The ID of the post.
+         * @param array          $field   The field array.
+         * @return mixed
+         */
+        public function format_value_for_jsonld($value, $post_id, $field)
+        {
+        }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
+        {
+        }
     }
     class acf_field_google_map extends \acf_field
     {
@@ -5541,6 +5710,29 @@ namespace {
          * @return mixed
          */
         public function format_value_for_rest($value, $post_id, array $field)
+        {
+        }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
+        {
+        }
+        /**
+         * Formats the field value for JSON-LD output.
+         *
+         * @since 6.8.0
+         *
+         * @param mixed          $value   The value of the field.
+         * @param integer|string $post_id The ID of the post.
+         * @param array          $field   The field array.
+         * @return mixed
+         */
+        public function format_value_for_jsonld($value, $post_id, $field)
         {
         }
     }
@@ -5787,6 +5979,29 @@ namespace {
         public function format_value_for_rest($value, $post_id, array $field)
         {
         }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
+        {
+        }
+        /**
+         * Formats the field value for JSON-LD output.
+         *
+         * @since 6.8.0
+         *
+         * @param mixed          $value   The value of the field.
+         * @param integer|string $post_id The ID of the post.
+         * @param array          $field   The field array.
+         * @return mixed
+         */
+        public function format_value_for_jsonld($value, $post_id, $field)
+        {
+        }
     }
     /**
      * Class acf_field_icon_picker.
@@ -5907,7 +6122,7 @@ namespace {
          * @param array $field The main field array.
          * @return array
          */
-        public function get_rest_schema(array $field): array
+        public function get_rest_schema(array $field) : array
         {
         }
         /**
@@ -6090,6 +6305,29 @@ namespace {
         public function format_value_for_rest($value, $post_id, array $field)
         {
         }
+        /**
+         * Formats the field value for JSON-LD output.
+         *
+         * @since 6.8.0
+         *
+         * @param mixed          $value   The value of the field.
+         * @param integer|string $post_id The ID of the post.
+         * @param array          $field   The field array.
+         * @return mixed
+         */
+        public function format_value_for_jsonld($value, $post_id, $field)
+        {
+        }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
+        {
+        }
     }
     class acf_field_link extends \acf_field
     {
@@ -6195,6 +6433,29 @@ namespace {
          * @return array
          */
         public function get_rest_schema(array $field)
+        {
+        }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
+        {
+        }
+        /**
+         * Formats the field value for JSON-LD output.
+         *
+         * @since 6.8.0
+         *
+         * @param mixed          $value   The value of the field.
+         * @param integer|string $post_id The ID of the post.
+         * @param array          $field   The field array.
+         * @return mixed
+         */
+        public function format_value_for_jsonld($value, $post_id, $field)
         {
         }
     }
@@ -6378,6 +6639,16 @@ namespace {
         public function format_value_for_rest($value, $post_id, array $field)
         {
         }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
+        {
+        }
     }
     class acf_field_oembed extends \acf_field
     {
@@ -6490,6 +6761,29 @@ namespace {
          * @return array
          */
         public function get_rest_schema(array $field)
+        {
+        }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
+        {
+        }
+        /**
+         * Formats the field value for JSON-LD output.
+         *
+         * @since 6.8.0
+         *
+         * @param mixed          $value   The value of the field (URL).
+         * @param integer|string $post_id The ID of the post.
+         * @param array          $field   The field array.
+         * @return mixed
+         */
+        public function format_value_for_jsonld($value, $post_id, $field)
         {
         }
     }
@@ -6704,6 +6998,29 @@ namespace {
         public function format_value_for_rest($value, $post_id, array $field)
         {
         }
+        /**
+         * Formats the field value for JSON-LD output.
+         *
+         * @since 6.8.0
+         *
+         * @param mixed          $value   The value of the field.
+         * @param integer|string $post_id The ID of the post.
+         * @param array          $field   The field array.
+         * @return mixed
+         */
+        public function format_value_for_jsonld($value, $post_id, $field)
+        {
+        }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
+        {
+        }
     }
     class acf_field_password extends \acf_field
     {
@@ -6756,6 +7073,19 @@ namespace {
         function render_field_presentation_settings($field)
         {
         }
+        /**
+         * Formats the field value for JSON-LD output.
+         *
+         * @since 6.8.0
+         *
+         * @param mixed          $value   The value of the field.
+         * @param integer|string $post_id The ID of the post.
+         * @param array          $field   The field array.
+         * @return mixed
+         */
+        public function format_value_for_jsonld($value, $post_id, $field)
+        {
+        }
     }
     class acf_field_post_object extends \acf_field
     {
@@ -6791,7 +7121,7 @@ namespace {
         {
         }
         /**
-         * This function will return an array of data formatted for use in a select2 AJAX response
+         * Returns an array of data formatted for use in a select2 AJAX response.
          *
          * @since 5.0.9
          *
@@ -6974,6 +7304,29 @@ namespace {
         public function format_value_for_rest($value, $post_id, array $field)
         {
         }
+        /**
+         * Formats the field value for JSON-LD output.
+         *
+         * @since 6.8.0
+         *
+         * @param mixed          $value   The value of the field.
+         * @param integer|string $post_id The ID of the post.
+         * @param array          $field   The field array.
+         * @return mixed
+         */
+        public function format_value_for_jsonld($value, $post_id, $field)
+        {
+        }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
+        {
+        }
     }
     class acf_field_radio extends \acf_field
     {
@@ -7127,6 +7480,16 @@ namespace {
         function get_rest_schema(array $field)
         {
         }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
+        {
+        }
     }
     class acf_field_range extends \acf_field_number
     {
@@ -7210,6 +7573,16 @@ namespace {
         public function format_value_for_rest($value, $post_id, array $field)
         {
         }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
+        {
+        }
     }
     class acf_field_relationship extends \acf_field
     {
@@ -7260,12 +7633,12 @@ namespace {
         {
         }
         /**
-         * This function will return an array of data formatted for use in a select2 AJAX response
+         * Returns an array of data formatted for use in a select2 AJAX response.
          *
-         * @since   5.0.9
+         * @since 5.0.9
          *
          * @param array $options An array of options for the query.
-         * @return array
+         * @return array|false
          */
         public function get_ajax_query($options = array())
         {
@@ -7439,6 +7812,29 @@ namespace {
          * @return mixed
          */
         public function format_value_for_rest($value, $post_id, array $field)
+        {
+        }
+        /**
+         * Formats the field value for JSON-LD output.
+         *
+         * @since 6.8.0
+         *
+         * @param mixed          $value   The value of the field.
+         * @param integer|string $post_id The ID of the post.
+         * @param array          $field   The field array.
+         * @return mixed
+         */
+        public function format_value_for_jsonld($value, $post_id, $field)
+        {
+        }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
         {
         }
     }
@@ -7635,6 +8031,16 @@ namespace {
          * @return array
          */
         public function get_rest_schema(array $field)
+        {
+        }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
         {
         }
     }
@@ -7955,6 +8361,29 @@ namespace {
         public function get_rest_links($value, $post_id, array $field)
         {
         }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
+        {
+        }
+        /**
+         * Formats the field value for JSON-LD output.
+         *
+         * @since 6.8.0
+         *
+         * @param mixed          $value   The value of the field.
+         * @param integer|string $post_id The ID of the post.
+         * @param array          $field   The field array.
+         * @return mixed
+         */
+        public function format_value_for_jsonld($value, $post_id, $field)
+        {
+        }
     }
     class acf_field_text extends \acf_field
     {
@@ -8042,6 +8471,16 @@ namespace {
          * @return array
          */
         function get_rest_schema(array $field)
+        {
+        }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
         {
         }
     }
@@ -8149,6 +8588,16 @@ namespace {
         function get_rest_schema(array $field)
         {
         }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
+        {
+        }
     }
     class acf_field_time_picker extends \acf_field
     {
@@ -8225,6 +8674,31 @@ namespace {
          * @return array
          */
         public function get_rest_schema(array $field)
+        {
+        }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
+        {
+        }
+        /**
+         * Formats the field value for JSON-LD output.
+         *
+         * Returns the stored H:i:s format which is already ISO 8601 compliant.
+         *
+         * @since 6.8.0
+         *
+         * @param mixed          $value   The value of the field.
+         * @param integer|string $post_id The ID of the post.
+         * @param array          $field   The field array.
+         * @return string|null ISO 8601 formatted time or null.
+         */
+        public function format_value_for_jsonld($value, $post_id, $field)
         {
         }
     }
@@ -8341,6 +8815,16 @@ namespace {
         public function format_value_for_rest($value, $post_id, array $field)
         {
         }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
+        {
+        }
     }
     /**
      * The URL field class.
@@ -8422,6 +8906,16 @@ namespace {
          * @return array
          */
         public function get_rest_schema(array $field)
+        {
+        }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
         {
         }
     }
@@ -8685,6 +9179,29 @@ namespace {
         public function format_value_for_rest($value, $post_id, array $field)
         {
         }
+        /**
+         * Formats the field value for JSON-LD output.
+         *
+         * @since 6.8.0
+         *
+         * @param mixed          $value   The value of the field.
+         * @param integer|string $post_id The ID of the post.
+         * @param array          $field   The field array.
+         * @return mixed
+         */
+        public function format_value_for_jsonld($value, $post_id, $field)
+        {
+        }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
+        {
+        }
     }
     class acf_field_wysiwyg extends \acf_field
     {
@@ -8789,6 +9306,16 @@ namespace {
          * @return mixed   $value       The modified value
          */
         public function format_value($value, $post_id, $field, $escape_html)
+        {
+        }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
         {
         }
     }
@@ -9139,7 +9666,7 @@ namespace {
          *
          * @return array
          */
-        public function get_default_fields(): array
+        public function get_default_fields() : array
         {
         }
         /**
@@ -9250,14 +9777,48 @@ namespace {
         {
         }
         /**
-         * description
+         * Returns the fields a given form configuration will expose, mirroring the
+         * selection logic used by render_form().
          *
-         * @type    function
-         * @date    7/09/2016
-         * @since   5.4.0
+         * Used by render_form() to discover what to render, and by submit_form() to
+         * derive the set of $_POST['acf'] keys the save path will accept.
          *
-         * @param   int $post_id
-         * @return  int $post_id
+         * @since 6.8.2
+         *
+         * @param array $args The validated form configuration.
+         * @return array
+         */
+        protected function get_form_fields(array $args) : array
+        {
+        }
+        /**
+         * Returns the top-level $_POST['acf'] keys a given form configuration will accept on save.
+         *
+         * Derived from the same field discovery render_form() uses, so the set of save-acceptable
+         * keys matches the set of keys the form actually rendered. For seamless clone fields whose
+         * subfield input names nest under the parent clone's key (e.g. acf[clone_key][subkey]),
+         * the parent's top-level key is what gets returned.
+         *
+         * @since 6.8.2
+         *
+         * @param array $form The validated form configuration.
+         * @return array
+         */
+        public function get_allowed_field_keys(array $form) : array
+        {
+        }
+        /**
+         * Renders a front-end ACF form.
+         *
+         * Accepts either an array of form configuration (validated via validate_form()) or the
+         * string id of a form previously registered with acf_register_form(). Outputs the form
+         * HTML directly.
+         *
+         * @since 5.4.0
+         *
+         * @param array|string $args Form configuration array, or the id of a registered form.
+         * @return false|void False if a registered form id was passed and no matching form exists;
+         *                    otherwise outputs the form and returns no value.
          */
         function render_form($args = array())
         {
@@ -10043,6 +10604,39 @@ namespace {
          * @return  boolean
          */
         public function is_enabled()
+        {
+        }
+        /**
+         * Returns true if a Local JSON save failure has been recorded for this request.
+         *
+         * @since 6.8.1
+         *
+         * @return boolean
+         */
+        public function has_save_file_failure()
+        {
+        }
+        /**
+         * Appends a Local JSON save failure query arg to the post save redirect.
+         *
+         * @since 6.8.1
+         *
+         * @param string $location The redirect location.
+         * @return string
+         */
+        public function redirect_post_location($location)
+        {
+        }
+        /**
+         * Adds an admin notice when a Local JSON save failure is present in the request.
+         *
+         * @since 6.8.1
+         *
+         * @param WP_Screen $current_screen The current WP_Screen object.
+         * @return void
+         * @phpstan-return void
+         */
+        public function maybe_show_save_failure_notice($current_screen)
         {
         }
         /**
@@ -14051,7 +14645,7 @@ namespace {
          * @param array          $field   The Flexible Content field array.
          * @return array
          */
-        public function get_disabled_layouts($post_id, $field): array
+        public function get_disabled_layouts($post_id, $field) : array
         {
         }
         /**
@@ -14063,7 +14657,7 @@ namespace {
          * @param array          $field   The Flexible Content field array.
          * @return array
          */
-        public function get_renamed_layouts($post_id, $field): array
+        public function get_renamed_layouts($post_id, $field) : array
         {
         }
         /**
@@ -14488,6 +15082,29 @@ namespace {
         public function format_value_for_rest($value, $post_id, array $field)
         {
         }
+        /**
+         * Formats the field value for JSON-LD output.
+         *
+         * @since 6.8.0
+         *
+         * @param mixed          $value   The value of the field.
+         * @param integer|string $post_id The ID of the post.
+         * @param array          $field   The field array.
+         * @return mixed
+         */
+        public function format_value_for_jsonld($value, $post_id, $field)
+        {
+        }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
+        {
+        }
     }
     class acf_field_repeater extends \acf_field
     {
@@ -14828,7 +15445,39 @@ namespace {
         public function ajax_get_rows()
         {
         }
+        /**
+         * Returns an array of JSON-LD Property output types that are supported by this field type.
+         *
+         * @since 6.8
+         *
+         * @return string[]
+         */
+        public function get_jsonld_output_types() : array
+        {
+        }
+        /**
+         * Formats the field value for JSON-LD output.
+         *
+         * @since 6.8.0
+         *
+         * @param mixed          $value   The value of the field.
+         * @param integer|string $post_id The ID of the post.
+         * @param array          $field   The field array.
+         * @return mixed
+         */
+        public function format_value_for_jsonld($value, $post_id, $field)
+        {
+        }
     }
+    /**
+     * @package ACF
+     * @author  WP Engine
+     *
+     * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
+     * "ACF" is a trademark of WP Engine.
+     * Licensed under the GNU General Public License v2 or later.
+     * https://www.gnu.org/licenses/gpl-2.0.html
+     */
     /**
      * ACF_Repeater_Table
      *
@@ -15318,6 +15967,898 @@ namespace {
         }
     }
 }
+namespace ACF\AI {
+    /**
+     * Initializes the ACF AI functionality if enabled.
+     */
+    class AI
+    {
+        /**
+         * Constructs the AI class.
+         *
+         * @since 6.8.0
+         *
+         * @return void
+         */
+        public function __construct()
+        {
+        }
+        /**
+         * Initializes the AI functionality.
+         *
+         * @since 6.8.0
+         *
+         * @return void
+         */
+        public function initialize()
+        {
+        }
+        /**
+         * Checks if AI functionality is enabled.
+         *
+         * @since 6.8.0
+         *
+         * @return boolean
+         */
+        public function is_ai_enabled() : bool
+        {
+        }
+        /**
+         * Checks if GEO functionality is enabled.
+         *
+         * @since 6.8.0
+         *
+         * @return boolean
+         */
+        public function is_geo_enabled() : bool
+        {
+        }
+        /**
+         * Adds admin UI hooks.
+         *
+         * @since 6.8.0
+         *
+         * @return void
+         */
+        public function add_admin_ui_hooks()
+        {
+        }
+        /**
+         * Registers the AI tab in various contexts.
+         *
+         * @since 6.8.0
+         *
+         * @param array $tabs The existing tabs array.
+         * @return array
+         */
+        public function add_acf_ai_tab(array $tabs) : array
+        {
+        }
+        /**
+         * Renders the ACF AI tab in various contexts.
+         *
+         * @since 6.8.0
+         *
+         * @param array $item The field group, post type, taxonomy, etc. being edited.
+         * @return void
+         * @phpstan-return void
+         */
+        public function render_acf_ai_tab(array $item)
+        {
+        }
+    }
+}
+namespace ACF\AI\Abilities {
+    /**
+     * ACF REST Ability
+     *
+     * Custom ability class that extends WP_Ability to skip output validation.
+     * This is needed because REST API schemas don't always match Abilities API schemas exactly,
+     * but we want to proxy directly to REST API endpoints.
+     */
+    class ACF_REST_Ability extends \WP_Ability
+    {
+        /**
+         * Override validate_output to always return true.
+         *
+         * Since we're proxying to WordPress REST API endpoints that have their own
+         * validation, we trust their output and skip Abilities API output validation.
+         *
+         * @since 6.8.0
+         *
+         * @param mixed $output The output to validate.
+         * @return true Always returns true to skip validation.
+         */
+        protected function validate_output($output)
+        {
+        }
+    }
+    /**
+     * The ACF Abilities API integration.
+     *
+     * Extends the WordPress Abilities API to expose field groups, post types,
+     * taxonomies, and options pages when the "Allow AI Access" setting is enabled.
+     */
+    class Abilities
+    {
+        /**
+         * Constructs the class.
+         *
+         * @since 6.8.0
+         *
+         * @return void
+         */
+        public function __construct()
+        {
+        }
+        /**
+         * Initialize the Abilities API integration.
+         *
+         * @since 6.8.0
+         *
+         * @return void
+         */
+        public function init()
+        {
+        }
+        /**
+         * Register Ability Categories
+         *
+         * @since 6.8.0
+         *
+         * @return void
+         * @phpstan-return void
+         */
+        public function register_categories()
+        {
+        }
+        /**
+         * Register Abilities for ACF
+         *
+         * @since 6.8.0
+         *
+         * @return void
+         * @phpstan-return void
+         */
+        public function register_abilities()
+        {
+        }
+        /**
+         * Parse JSON input from query parameters for Abilities API
+         *
+         * WordPress 6.9's Abilities API REST controller doesn't parse JSON strings
+         * from query parameters in GET requests. This filter fixes that by detecting
+         * JSON strings in the 'input' parameter and parsing them into objects/arrays.
+         *
+         * @since 6.8.0
+         *
+         * @param mixed           $response Response object.
+         * @param array           $handler  Route handler info.
+         * @param WP_REST_Request $request  Request object.
+         * @return mixed
+         */
+        public function parse_abilities_json_input($response, $handler, $request)
+        {
+        }
+    }
+    /**
+     * Abstract Ability Group
+     *
+     * Base class for all ability groups.
+     */
+    abstract class AbstractAbilityGroup
+    {
+        const REST_ABILITY_CLASS = 'ACF\\AI\\Abilities\\ACF_REST_Ability';
+        /**
+         * Register abilities for this ability group
+         *
+         * @since 6.8.0
+         *
+         * @return void
+         */
+        public abstract function register_abilities();
+        /**
+         * Check if the WordPress Abilities API is available
+         *
+         * @since 6.8.0
+         *
+         * @return boolean
+         */
+        protected function is_abilities_api_available()
+        {
+        }
+        /**
+         * Register an ability with error handling.
+         *
+         * @since 6.8.0
+         *
+         * @param string $id           Ability ID.
+         * @param array  $ability_args Ability arguments.
+         * @return object|null Registered ability object or null on failure.
+         */
+        protected function register_ability($id, $ability_args)
+        {
+        }
+        /**
+         * Retrieves the AI-enabled ACF fields for the provided object.
+         *
+         * @since 6.8.0
+         *
+         * @param string         $object_type The object type being queried.
+         * @param integer|string $object_id   The object to get ACF fields for.
+         * @return array
+         */
+        protected function get_acf_fields_for_object($object_type, $object_id)
+        {
+        }
+        /**
+         * A helper function to format ACF fields for schema output.
+         *
+         * @since 6.8.0
+         *
+         * @param array $fields The ACF fields array.
+         * @return array
+         */
+        protected function format_acf_fields_for_schema(array $fields) : array
+        {
+        }
+        /**
+         * Adds ACF fields to a schema.
+         *
+         * @since 6.8.0
+         *
+         * @param array $schema     The schema to add fields to.
+         * @param array $acf_fields The ACF fields to add.
+         * @return array
+         */
+        protected function add_acf_fields_to_schema(array $schema, array $acf_fields) : array
+        {
+        }
+        /**
+         * Execute a REST API request.
+         *
+         * @since 6.8.0
+         *
+         * @param string  $method    HTTP method (GET, POST, PUT, DELETE).
+         * @param string  $rest_base REST API base.
+         * @param array   $input     Input parameters.
+         * @param integer $item_id   Optional item ID for single item operations.
+         * @return array|WP_Error Response data or error.
+         */
+        protected function execute_rest_request(string $method, string $rest_base, $input = array(), $item_id = null)
+        {
+        }
+    }
+    /**
+     * ACF Field Group Abilities
+     *
+     * Handles ACF field group related abilities for the WordPress Abilities API.
+     */
+    class FieldGroup extends \ACF\AI\Abilities\AbstractAbilityGroup
+    {
+        /**
+         * Register field group related abilities.
+         *
+         * @since 6.8.0
+         *
+         * @return void
+         */
+        public function register_abilities()
+        {
+        }
+        /**
+         * Callback for the "acf/get-field-groups" ability.
+         *
+         * @since 6.8.0
+         *
+         * @param array $input Ability input (unused).
+         * @return array
+         */
+        public function get_field_groups($input = array())
+        {
+        }
+        /**
+         * A helper function to get the field groups that allow AI access.
+         *
+         * @since 6.8.0
+         *
+         * @return array
+         */
+        public function get_ai_accessible_field_groups() : array
+        {
+        }
+        /**
+         * Callback for the "acf/register-field-group" ability.
+         *
+         * @since 6.8.0
+         *
+         * @param array $input Ability arguments containing title and fields.
+         * @return array|WP_Error
+         */
+        public function create_field_group($input = array())
+        {
+        }
+        /**
+         * Ensures a field has a key and name before import and sanitizes user input.
+         *
+         * @since 6.8.0
+         *
+         * @param array $field The field being prepared for import.
+         * @return array The field with key, name, and sanitized values.
+         */
+        public function prepare_field_for_ability_import($field)
+        {
+        }
+    }
+    /**
+     * ACF Post Type Abilities
+     *
+     * Handles ACF custom post type related abilities for the WordPress Abilities API.
+     */
+    class PostType extends \ACF\AI\Abilities\AbstractAbilityGroup
+    {
+        /**
+         * Register post type related abilities.
+         *
+         * @since 6.8.0
+         *
+         * @return void
+         */
+        public function register_abilities()
+        {
+        }
+        /**
+         * Callback for the "acf/get-custom-post-types" ability.
+         *
+         * @since 6.8.0
+         *
+         * @param array $input An array of input args.
+         * @return array
+         */
+        public function get_custom_post_types($input)
+        {
+        }
+        /**
+         * Callback for the "acf/register-custom-post-type" ability.
+         *
+         * @since 6.8.0
+         *
+         * @param array $input An array of input args.
+         * @return array|WP_Error
+         */
+        public function create_custom_post_type($input)
+        {
+        }
+    }
+    /**
+     * ACF Taxonomy Abilities
+     *
+     * Handles ACF custom taxonomy related abilities for the WordPress Abilities API.
+     */
+    class Taxonomy extends \ACF\AI\Abilities\AbstractAbilityGroup
+    {
+        /**
+         * Register taxonomy related abilities.
+         *
+         * @since 6.8.0
+         *
+         * @return void
+         */
+        public function register_abilities()
+        {
+        }
+        /**
+         * Callback for the "acf/get-custom-taxonomies" ability.
+         *
+         * @since 6.8.0
+         *
+         * @param array $input Input args (unused).
+         * @return array
+         */
+        public function get_custom_taxonomies($input)
+        {
+        }
+        /**
+         * Callback for the "acf/register-custom-taxonomy" ability.
+         *
+         * @since 6.8.0
+         *
+         * @param array $input Input args.
+         * @return array|WP_Error
+         */
+        public function create_custom_taxonomy($input)
+        {
+        }
+    }
+}
+namespace ACF\AI\GEO {
+    /**
+     * ACF GEO Field Settings
+     *
+     * Adds JSON-LD field role settings to ACF fields.
+     */
+    class FieldSettings
+    {
+        /**
+         * Constructs the FieldSettings class.
+         *
+         * @since 6.8.0
+         *
+         * @return void
+         */
+        public function __construct()
+        {
+        }
+        /**
+         * Initialize the field settings
+         *
+         * @since 6.8.0
+         *
+         * @return void
+         */
+        public function init()
+        {
+        }
+        /**
+         * AJAX handler to get output format choices for a field type + property combination.
+         *
+         * @since 6.8.0
+         *
+         * @return void
+         * @phpstan-return never
+         */
+        public function ajax_get_output_formats()
+        {
+        }
+        /**
+         * Render the field-level schema settings.
+         *
+         * @since 6.8.0
+         *
+         * @param array $field The field being edited.
+         * @return void
+         * @phpstan-return void
+         */
+        public function render_field_schema_settings($field)
+        {
+        }
+        /**
+         * Get available Schema.org properties for a field type
+         *
+         * Returns a hierarchical array of Schema.org properties organized by type,
+         * filtered to only include properties compatible with the field type.
+         *
+         * Uses pre-computed compatibility data for fast lookups.
+         *
+         * @since 6.8.0
+         *
+         * @param string  $field_type The ACF field type name.
+         * @param integer $context_id Optional field group ID for context-aware priority ordering.
+         * @return array Array of properties grouped by Schema.org type.
+         */
+        public function get_schema_properties(string $field_type = '', int $context_id = 0) : array
+        {
+        }
+    }
+    /**
+     * ACF GEO Extension
+     *
+     * Extends ACF admin interface to add AI-related settings and functionality.
+     */
+    class GEO
+    {
+        /**
+         * Constructs the GEO class.
+         *
+         * @since 6.8.0
+         *
+         * @return void
+         */
+        public function __construct()
+        {
+        }
+        /**
+         * Initialize the GEO extension,
+         *
+         * @since 6.8.0
+         *
+         * @return void
+         */
+        public function init()
+        {
+        }
+        /**
+         * Adds the "Schema" settings tab for post types.
+         *
+         * @since 6.8.0
+         *
+         * @param array $tabs An array of the existing tabs.
+         * @return array
+         */
+        public function add_schema_tab($tabs)
+        {
+        }
+        /**
+         * Render "Schema" tab content for post types
+         *
+         * @since 6.8.0
+         *
+         * @param array $acf_post_type The ACF post type data.
+         */
+        public function render_post_type_schema_tab($acf_post_type)
+        {
+        }
+        /**
+         * Get available Schema.org types for selection
+         *
+         * @since 6.8.0
+         *
+         * @return array A hierarchical array of Schema.org types grouped by category.
+         */
+        public function get_schema_types()
+        {
+        }
+        /**
+         * Process ACF fields and map them to Schema.org structure
+         *
+         * Takes an array of field objects and processes them based on their schema_property setting.
+         * Fields with a schema_property are mapped to core Schema.org properties. Properties that
+         * expect objects (like 'author' or 'publisher') automatically get proper "@type" added.
+         * Fields without a schema_property are skipped.
+         *
+         * @since 6.8.0
+         *
+         * @param array $field_objects Array of ACF field objects with values.
+         * @return array Processed data with core properties, with 'field_types' key containing types from qualified properties.
+         */
+        public static function process_fields($field_objects)
+        {
+        }
+        /**
+         * Determine the final "@type" value for JSON-LD output
+         *
+         * Merges provided types (from post type/block settings) with field types
+         * (from qualified properties like "Recipe.prepTime"). Falls back to the
+         * default type if neither source provides any types.
+         *
+         * @since 6.8.0
+         *
+         * @param string|array|null $provided_types Types explicitly set in settings (can be string, array, or null).
+         * @param array             $field_types    Types extracted from qualified properties.
+         * @param string            $default_type   Fallback type if no types provided.
+         * @return string|array Final @type value (string for single type, array for multiple).
+         */
+        public static function determine_schema_type($provided_types, $field_types, $default_type = 'Thing')
+        {
+        }
+        /**
+         * Render a JSON-LD script tag with the provided data
+         *
+         * Shared helper method for outputting JSON-LD structured data.
+         *
+         * @since 6.8.0
+         *
+         * @param array $jsonld_data The JSON-LD data array to output.
+         * @phpstan-return void
+         */
+        public static function render_jsonld_script($jsonld_data)
+        {
+        }
+        /**
+         * Format ACF field value for JSON-LD output
+         *
+         * Shared helper method for formatting field values consistently.
+         * Checks for field-type-specific formatting methods in this order:
+         * 1. Pre-filter to allow complete bypass of formatting logic
+         * 2. format_value_for_jsonld() - custom method for JSON-LD formatting (if field type implements it)
+         * 3. Field-type-specific formatting, defaulting to format_value_for_rest() for most types
+         * 4. Post-filter on the final formatted value
+         *
+         * @since 6.8.0
+         *
+         * @param mixed $value        The field value.
+         * @param array $field_object The ACF field object.
+         * @return mixed Formatted value.
+         */
+        public static function format_field_value_for_jsonld($value, $field_object)
+        {
+        }
+    }
+}
+namespace ACF\AI\GEO\Outputs {
+    /**
+     * ACF GEO Posts Output
+     *
+     * Handles JSON-LD structured data output for ACF fields on post types.
+     */
+    class Posts
+    {
+        /**
+         * Constructor
+         *
+         * @since 6.8.0
+         */
+        public function __construct()
+        {
+        }
+        /**
+         * Initialize the GEO Posts extension
+         *
+         * @since 6.8.0
+         */
+        public function init()
+        {
+        }
+        /**
+         * Output JSON-LD structured data for ACF fields on posts
+         *
+         * @since 6.8.0
+         * @phpstan-return void
+         */
+        public function output_jsonld_data()
+        {
+        }
+    }
+}
+namespace ACF\AI\GEO {
+    /**
+     * Class Schema
+     *
+     * Provides utilities for working with schema.org types and properties
+     * using pre-generated schema data from SchemaData.php.
+     */
+    class Schema
+    {
+        /**
+         * Get priority schema types for common use cases
+         *
+         * Returns an array of commonly used Schema.org types that should be
+         * displayed first in selection dropdowns. When a context ID (field group ID)
+         * is provided, schema types from associated post types and blocks are
+         * prepended to the list.
+         *
+         * @since 6.8.0
+         *
+         * @param integer $context_id Optional field group ID to get context-aware priority types.
+         * @return array Array of priority type names.
+         */
+        public static function get_priority_types(int $context_id = 0) : array
+        {
+        }
+        /**
+         * Infer the minimal set of types needed for a set of properties
+         *
+         * Given a list of properties, returns the most general types that
+         * directly define those properties, avoiding redundant child types.
+         *
+         * For example:
+         * - ['prepTime', 'cookTime'] -> ['Recipe'] (most specific type with those properties)
+         * - ['headline'] -> ['CreativeWork'] (the base type that defines headline)
+         *
+         * @since 6.8.0
+         *
+         * @param array $properties Array of property names
+         * @return array Array of type names
+         */
+        public static function infer_types_from_properties($properties)
+        {
+        }
+        /**
+         * Get all properties grouped by type
+         *
+         * Returns an associative array where keys are type names and values
+         * are arrays of property names that belong to that type.
+         *
+         * @since 6.8.0
+         *
+         * @return array Associative array of type => properties
+         */
+        public static function get_properties_by_type()
+        {
+        }
+        /**
+         * Get the expected types (range) for a property
+         *
+         * Returns the types that a property expects as its value.
+         * For example, 'author' expects ['Person', 'Organization']
+         *
+         * @since 6.8.0
+         *
+         * @param string $property The property name
+         * @return array Array of type names, or empty array if not found
+         */
+        public static function get_property_range($property)
+        {
+        }
+        /**
+         * Check if a property expects an object (not a primitive type)
+         *
+         * Returns true if the property expects a schema.org Type as its value,
+         * meaning it should be a nested object with @type.
+         *
+         * Primitive types: Text, Number, Boolean, Date, DateTime, Time, URL, etc.
+         *
+         * @since 6.8.0
+         *
+         * @param string $property The property name
+         * @return boolean True if property expects an object
+         */
+        public static function property_expects_object($property)
+        {
+        }
+        /**
+         * Get the preferred object type for a property
+         *
+         * When a property expects an object, this returns the most appropriate type.
+         * For properties with multiple possible types, returns the first one.
+         *
+         * @since 6.8.0
+         *
+         * @param string $property The property name
+         * @return string|null The type name, or null if property doesn't expect an object
+         */
+        public static function get_preferred_object_type($property)
+        {
+        }
+        /**
+         * Get the supported JSON-LD ranges for a field type
+         *
+         * Returns the Schema.org types that a field type can output.
+         *
+         * @since 6.8.0
+         *
+         * @param string $field_type The ACF field type name (e.g., 'image', 'user')
+         * @return array Array of supported range types
+         */
+        public static function get_field_type_ranges($field_type)
+        {
+        }
+        /**
+         * Check if a Schema.org type has properties defined on it or its ancestors
+         *
+         * Walks up the type hierarchy checking if the type or any parent (excluding
+         * Thing, which is too generic) has properties defined. This distinguishes
+         * structural types (Person, Place, Organization) from value types (Duration,
+         * Distance) that have no meaningful sub-properties.
+         *
+         * @since 6.8.0
+         *
+         * @param string $type The Schema.org type name
+         * @return boolean True if type or an ancestor has properties defined
+         */
+        public static function type_has_properties($type)
+        {
+        }
+        /**
+         * Get valid output formats for a field/property combination
+         *
+         * When a field type supports multiple output formats (e.g., image can
+         * output URL or ImageObject), this returns the formats valid for a
+         * specific property.
+         *
+         * @since 6.8.0
+         *
+         * @param string $field_type The ACF field type name
+         * @param string $property   The Schema.org property name
+         * @return array Array of valid output format types
+         */
+        public static function get_valid_output_formats($field_type, $property)
+        {
+        }
+        /**
+         * Parse a qualified property string (e.g., "Offer.price" or "price")
+         *
+         * Returns an array with 'type' and 'property' keys.
+         * For unqualified properties (no dot), type will be null.
+         *
+         * @since 6.8.0
+         *
+         * @param string $qualified_property The property string, optionally prefixed with Type.
+         * @return array Array with 'type' (string|null) and 'property' (string) keys.
+         */
+        public static function parse_qualified_property($qualified_property)
+        {
+        }
+        /**
+         * Get just the property name from a qualified property string
+         *
+         * @since 6.8.0
+         *
+         * @param string $qualified_property The property string, optionally prefixed with Type.
+         * @return string The property name without the type prefix.
+         */
+        public static function get_property_name($qualified_property)
+        {
+        }
+        /**
+         * Get the type from a qualified property string
+         *
+         * @since 6.8.0
+         *
+         * @param string $qualified_property The property string, optionally prefixed with Type.
+         * @return string|null The type name, or null if not qualified.
+         */
+        public static function get_property_type($qualified_property)
+        {
+        }
+        /**
+         * Get the default output format for a field/property combination
+         *
+         * When multiple formats are valid, returns the most appropriate default.
+         * Prefers object types over primitives when both are available.
+         *
+         * @since 6.8.0
+         *
+         * @param string $field_type The ACF field type name
+         * @param string $property   The Schema.org property name
+         * @return string|null The default format type, or null if none valid
+         */
+        public static function get_default_output_format($field_type, $property)
+        {
+        }
+    }
+    /**
+     * Class SchemaData
+     *
+     * Contains static schema.org vocabulary data for type and property validation.
+     * Data is lazy-loaded from separate files to reduce memory usage when not needed.
+     */
+    class SchemaData
+    {
+        /**
+         * Get the type hierarchy mapping
+         *
+         * Maps each type to its parent type in the schema.org hierarchy.
+         * For example: 'Recipe' => 'HowTo'
+         *
+         * @since 6.8.0
+         *
+         * @return array
+         */
+        public static function get_type_hierarchy() : array
+        {
+        }
+        /**
+         * Get the property domain mappings
+         *
+         * Maps each property to the types it can be used with.
+         * For example: 'prepTime' => ['HowTo', 'HowToDirection']
+         *
+         * @since 6.8.0
+         *
+         * @return array
+         */
+        public static function get_property_domains() : array
+        {
+        }
+        /**
+         * Get the property range mappings
+         *
+         * Maps each property to the types it expects as values.
+         * For example: 'author' => ['Person', 'Organization']
+         *
+         * @since 6.8.0
+         *
+         * @return array
+         */
+        public static function get_property_ranges() : array
+        {
+        }
+        /**
+         * Get compatible properties by output type
+         *
+         * Pre-computed mapping of output types to compatible properties.
+         * For example: 'Text' => ['name', 'description', ...]
+         *
+         * @since 6.8.0
+         *
+         * @return array
+         */
+        public static function get_compatible_properties() : array
+        {
+        }
+    }
+}
 namespace ACF\Blocks {
     /**
      * The core ACF Blocks binding class.
@@ -15348,6 +16889,274 @@ namespace ACF\Blocks {
          * @return string|null The block binding value or an empty string on failure.
          */
         public function get_value(array $source_attrs, \WP_Block $block_instance, string $attribute_name)
+        {
+        }
+    }
+}
+namespace ACF\CLI {
+    /**
+     * Bootstrapper for ACF WP-CLI commands.
+     */
+    class CLI
+    {
+        /**
+         * Registers all free ACF WP-CLI commands.
+         *
+         * @since 6.8
+         */
+        public function __construct()
+        {
+        }
+    }
+    /**
+     * Manages ACF JSON import, export, and synchronization.
+     *
+     * ## EXAMPLES
+     *
+     *     # Show sync status for all item types (field groups, post types, taxonomies, options pages)
+     *     $ wp acf json status
+     *
+     *     # Sync all pending local JSON changes to database
+     *     $ wp acf json sync
+     *
+     *     # Import from a JSON file
+     *     $ wp acf json import ./acf-export.json
+     *
+     *     # Export all items to a directory
+     *     $ wp acf json export --dir=./exports/
+     *
+     *     # Export to stdout
+     *     $ wp acf json export --stdout
+     */
+    class JsonCommand
+    {
+        /**
+         * Shows the sync status for ACF items.
+         *
+         * Displays how many items are pending sync. Items are considered "pending"
+         * when the JSON file is newer than the database entry, or when the item
+         * exists in JSON but not in the database.
+         *
+         * ## OPTIONS
+         *
+         * [--type=<type>]
+         * : Limit to field groups, post types, taxonomies, or options pages. Defaults to all item types (field groups, post types, taxonomies, options pages).
+         * ---
+         * options:
+         *   - field-group
+         *   - post-type
+         *   - taxonomy
+         *   - options-page
+         * ---
+         *
+         * [--detailed]
+         * : Show detailed list of modified items instead of just counts.
+         *
+         * [--format=<format>]
+         * : Output format.
+         * ---
+         * default: table
+         * options:
+         *   - table
+         *   - json
+         *   - yaml
+         *   - csv
+         * ---
+         *
+         * ## EXAMPLES
+         *
+         *     # Check all item types
+         *     $ wp acf json status
+         *     +---------------+---------+-------+----------------+
+         *     | Type          | Pending | Total | Status         |
+         *     +---------------+---------+-------+----------------+
+         *     | field-group   | 3       | 12    | Sync available |
+         *     | post-type     | 0       | 2     | In sync        |
+         *     | taxonomy      | 1       | 3     | Sync available |
+         *     | options-page  | 0       | 1     | In sync        |
+         *     +---------------+---------+-------+----------------+
+         *
+         *     # Check only field groups
+         *     $ wp acf json status --type=field-group
+         *
+         *     # Show detailed list of pending items
+         *     $ wp acf json status --detailed
+         *     +-------------------+------------------+---------------+--------+
+         *     | Key               | Title            | Type          | Action |
+         *     +-------------------+------------------+---------------+--------+
+         *     | group_abc123      | Product Fields   | field-group   | Update |
+         *     | group_def456      | Homepage         | field-group   | Create |
+         *     | taxonomy_ghi789   | Product Category | taxonomy      | Update |
+         *     +-------------------+------------------+---------------+--------+
+         *
+         *     # Output status as JSON for scripts
+         *     $ wp acf json status --format=json
+         *     [{"Type":"field-group","Pending":3,"Total":12,"Status":"Sync available"}]
+         *
+         * @since 6.8
+         *
+         * @param array $args       Positional arguments.
+         * @param array $assoc_args Associative arguments.
+         * @phpstan-return void
+         */
+        public function status($args, $assoc_args)
+        {
+        }
+        /**
+         * Syncs local JSON changes to the database.
+         *
+         * Imports pending JSON changes for ACF items (field groups, post types,
+         * taxonomies, and options pages). This command reads JSON files from your
+         * theme/plugin acf-json directory and creates or updates the corresponding
+         * database entries.
+         *
+         * WARNING: This command modifies your database. Use --dry-run first to
+         * preview changes before running on production.
+         *
+         * ## OPTIONS
+         *
+         * [--type=<type>]
+         * : Limit sync to a specific item type. Defaults to all item types (field groups, post types, taxonomies, options pages).
+         * ---
+         * options:
+         *   - field-group
+         *   - post-type
+         *   - taxonomy
+         *   - options-page
+         * ---
+         *
+         * [--key=<key>]
+         * : Sync a specific item by its ACF key (e.g., group_abc123).
+         *
+         * [--dry-run]
+         * : Preview what would be synced without making changes. Recommended for
+         * production deployments.
+         *
+         * ## EXAMPLES
+         *
+         *     # Preview what will be synced (safe)
+         *     $ wp acf json sync --dry-run
+         *     3 item(s) pending sync:
+         *     +-------------------+------------------+---------------+--------+
+         *     | Key               | Title            | Type          | Action |
+         *     +-------------------+------------------+---------------+--------+
+         *     | group_abc123      | Product Fields   | field-group   | Update |
+         *     +-------------------+------------------+---------------+--------+
+         *
+         *     # Sync all pending changes
+         *     $ wp acf json sync
+         *     Updated field-group: Product Fields (group_abc123)
+         *     Success: 1 item(s) synced.
+         *
+         *     # Sync only field groups (during deployment)
+         *     $ wp acf json sync --type=field-group
+         *
+         *     # Sync a specific field group after manual JSON edit
+         *     $ wp acf json sync --key=group_abc123
+         *
+         *     # CI/CD deployment workflow
+         *     $ wp acf json status --format=json | jq '.[] | select(.Pending > 0)'
+         *     $ wp acf json sync --dry-run
+         *     $ wp acf json sync
+         *
+         * @since 6.8
+         *
+         * @param array $args       Positional arguments.
+         * @param array $assoc_args Associative arguments.
+         * @phpstan-return void
+         */
+        public function sync($args, $assoc_args)
+        {
+        }
+        /**
+         * Imports field groups, post types, taxonomies, and options pages from a JSON file.
+         *
+         * Reads an ACF export JSON file and imports the items into the database,
+         * replicating the functionality of the import UI in the WordPress admin.
+         * If an item with the same key already exists, it will be updated.
+         * Options pages require ACF PRO.
+         *
+         * ## OPTIONS
+         *
+         * <file>
+         * : Path to the JSON file to import.
+         *
+         * ## EXAMPLES
+         *
+         *     # Import field groups, post types, taxonomies, and options pages from a file
+         *     $ wp acf json import ./acf-export-2025-01-01.json
+         *     Imported field-group: My Field Group (group_abc123)
+         *     Imported post-type: Book (post_type_def456)
+         *     Success: Imported 2 item(s).
+         *
+         *     # Import a single field group JSON file
+         *     $ wp acf json import ./group_abc123.json
+         *
+         *     # Re-import to update existing items
+         *     $ wp acf json import ./acf-export.json
+         *     Updated field-group: My Field Group (group_abc123)
+         *     Success: Imported 1 item(s).
+         *
+         * @since 6.8
+         *
+         * @param array $args       Positional arguments.
+         * @param array $assoc_args Associative arguments.
+         * @phpstan-return void
+         */
+        public function import($args, $assoc_args)
+        {
+        }
+        /**
+         * Exports field groups, post types, taxonomies, and options pages to a JSON file.
+         *
+         * Exports ACF items to a JSON file, replicating the functionality of
+         * the export tool in the WordPress admin.
+         *
+         * ## OPTIONS
+         *
+         * [--field-groups=<keys>]
+         * : Export specific field groups by key or label, comma separated.
+         *
+         * [--post-types=<keys>]
+         * : Export specific post types by key or label, comma separated.
+         *
+         * [--taxonomies=<keys>]
+         * : Export specific taxonomies by key or label, comma separated.
+         *
+         * [--options-pages=<keys>]
+         * : Export specific options pages by key or label, comma separated. Requires ACF PRO.
+         *
+         * [--dir=<directory>]
+         * : Directory path to write the JSON file to.
+         *
+         * [--stdout]
+         * : Print the JSON to stdout instead of writing to a file.
+         *
+         * ## EXAMPLES
+         *
+         *     # Export all items to a directory
+         *     $ wp acf json export --dir=./exports/
+         *
+         *     # Export specific field groups by key
+         *     $ wp acf json export --field-groups=group_abc123,group_def456 --dir=./
+         *
+         *     # Export a field group by label
+         *     $ wp acf json export --field-groups="My Field Group" --dir=./
+         *
+         *     # Export mixed items (field groups and post types)
+         *     $ wp acf json export --field-groups=group_abc --post-types=post_type_def --dir=./
+         *
+         *     # Export to stdout for piping
+         *     $ wp acf json export --stdout
+         *     $ wp acf json export --field-groups=group_abc123 --stdout | jq .
+         *
+         * @since 6.8
+         *
+         * @param array $args       Positional arguments.
+         * @param array $assoc_args Associative arguments.
+         * @phpstan-return void
+         */
+        public function export($args, $assoc_args)
         {
         }
     }
@@ -15398,7 +17207,7 @@ namespace ACF\Meta {
          * @param integer|string $object_id The ID of the object to get meta from.
          * @return array
          */
-        public function get_meta($object_id = 0): array
+        public function get_meta($object_id = 0) : array
         {
         }
         /**
@@ -15472,7 +17281,7 @@ namespace ACF\Meta {
          * @param array          $field     The field array.
          * @return boolean
          */
-        public function delete_value($object_id = 0, array $field = array()): bool
+        public function delete_value($object_id = 0, array $field = array()) : bool
         {
         }
         /**
@@ -15484,7 +17293,7 @@ namespace ACF\Meta {
          * @param string         $field_name The name of the field to delete the reference from.
          * @return boolean
          */
-        public function delete_reference($object_id = 0, string $field_name = ''): bool
+        public function delete_reference($object_id = 0, string $field_name = '') : bool
         {
         }
     }
@@ -15519,7 +17328,7 @@ namespace ACF\Meta {
          * @param integer|string $object_id The ID of the object to get meta from.
          * @return array
          */
-        public function get_meta($object_id = 0): array
+        public function get_meta($object_id = 0) : array
         {
         }
         /**
@@ -15593,7 +17402,7 @@ namespace ACF\Meta {
          * @param array          $field     The field array.
          * @return boolean
          */
-        public function delete_value($object_id = 0, array $field = array()): bool
+        public function delete_value($object_id = 0, array $field = array()) : bool
         {
         }
         /**
@@ -15605,7 +17414,7 @@ namespace ACF\Meta {
          * @param string         $field_name The name of the field to delete the reference from.
          * @return boolean
          */
-        public function delete_reference($object_id = 0, string $field_name = ''): bool
+        public function delete_reference($object_id = 0, string $field_name = '') : bool
         {
         }
     }
@@ -15644,6 +17453,495 @@ namespace ACF\Meta {
          * @var string
          */
         public string $location_type = 'user';
+    }
+}
+namespace ACF\Pro\AI\GEO\Outputs {
+    /**
+     * ACF GEO Blocks Output
+     *
+     * Extends ACF Blocks to add JSON-LD structured data output for block fields.
+     *
+     * To enable JSON-LD output for a block, add "autoJsonLd": true to the ACF namespace
+     * in your block.json file, or use the acf/ai/block_jsonld_enabled filter.
+     *
+     * See README.md for complete usage examples and documentation.
+     */
+    class Blocks
+    {
+        /**
+         * Constructor
+         */
+        public function __construct()
+        {
+        }
+        /**
+         * Initialize the GEO Blocks extension.
+         *
+         * @since 6.8.0
+         *
+         * @return void
+         */
+        public function init()
+        {
+        }
+        /**
+         * Add support for autoJsonLd property from block.json ACF namespace
+         *
+         * Maps the 'autoJsonLd' property from block.json's acf namespace to 'auto_jsonld' setting.
+         * Also maps 'schemaType' to 'schema_type' for custom Schema.org @type values.
+         * This runs after ACF's own block.json handler.
+         *
+         * @since 6.8.0
+         *
+         * @param array $settings The compiled block settings.
+         * @param array $metadata The raw json metadata.
+         * @return array Modified block settings.
+         */
+        public function add_block_json_auto_jsonld_support($settings, $metadata)
+        {
+        }
+        /**
+         * Add support for autoJsonLd property from programmatic registration
+         *
+         * Maps the 'autoJsonLd' property from the acf namespace to 'auto_jsonld' setting
+         * and 'schemaType' to 'schema_type' for blocks registered via acf_register_block_type().
+         *
+         * @since 6.8.0
+         *
+         * @param array $block The block settings array.
+         * @return array Modified block settings.
+         */
+        public function add_programmatic_auto_jsonld_support($block)
+        {
+        }
+        /**
+         * Output JSON-LD structured data for ACF block fields.
+         *
+         * @since 6.8.0
+         *
+         * @param array    $block      The block props.
+         * @param string   $content    The block content.
+         * @param boolean  $is_preview Whether or not the block is being rendered for editing preview.
+         * @param integer  $post_id    The current post being edited or viewed.
+         * @param WP_Block $wp_block   The block instance.
+         * @param array    $context    The block context array.
+         * @phpstan-return void
+         */
+        public function output_block_jsonld_data($block, $content, $is_preview, $post_id, $wp_block, $context)
+        {
+        }
+    }
+}
+namespace ACF\Pro\Blocks {
+    /**
+     * Enqueues the JS layer that powers ACF block bindings in the block editor.
+     *
+     * The JS bindings layer registers a block binding source via the stable
+     * registerBlockBindingsSource API (WP 6.7+), enabling live preview and
+     * editing of ACF field values bound to block attributes. It runs alongside
+     * the shared server-side ACF\Blocks\Bindings class.
+     */
+    class Bindings_Editor
+    {
+        /**
+         * Constructor.
+         * @phpstan-return void
+         */
+        public function __construct()
+        {
+        }
+        /**
+         * Enqueues the JS block bindings source script on block editor screens.
+         *
+         * @return void
+         * @phpstan-return void
+         */
+        public function enqueue_block_editor_assets()
+        {
+        }
+    }
+}
+namespace ACF\Pro\Datastore {
+    /**
+     * Attaches datastore field data to the acf/ajax/check_screen response.
+     *
+     * The check_screen AJAX endpoint runs when WordPress loads metaboxes
+     * dynamically (the meta-box-loader path). When new field groups appear
+     * on screen, the JS-side datastore needs to know about their fields and
+     * values. This class collects that data and merges it into the response
+     * as `storeData` for groups that were not already on the page.
+     */
+    class Check_Screen
+    {
+        /**
+         * Constructor.
+         *
+         * @since 6.8.1
+         */
+        public function __construct()
+        {
+        }
+        /**
+         * Attaches datastore data for newly-loaded field groups to the response.
+         *
+         * @since 6.8.1
+         *
+         * @param array $response     The check_screen response array.
+         * @param array $field_groups The field groups returned for this screen.
+         * @param array $args         The check_screen request args (post_id, screen, exists, ...).
+         * @return array
+         */
+        public function attach_store_data($response, $field_groups, $args)
+        {
+        }
+    }
+    /**
+     * Enqueues the ACF datastore script and localizes field group definitions
+     * and values for the @wordpress/data store consumed by the JS datastore.
+     *
+     * Independently listens to the same enqueue_block_editor_assets WP action
+     * the free ACF_Form_Gutenberg uses, so no free-side touchpoint is required.
+     */
+    class Localization
+    {
+        /**
+         * Constructor.
+         *
+         * @since 6.8.1
+         */
+        public function __construct()
+        {
+        }
+        /**
+         * Allows the JS datastore to look up specific users by ID via the user
+         * query endpoint, so revision restores and programmatic acf.store.set()
+         * calls can render user labels for values not in the page-rendered options.
+         *
+         * @since 6.8.1
+         *
+         * @param array           $args    The query args.
+         * @param array           $request The query request.
+         * @param \ACF_Ajax_Query $query   The query object.
+         * @return array
+         */
+        public function add_user_query_include($args, $request, $query)
+        {
+        }
+        /**
+         * Enqueues the datastore script and localizes the field store data
+         * when the datastore is enabled.
+         *
+         * @since 6.8.1
+         *
+         * @return void
+         * @phpstan-return void
+         */
+        public function enqueue()
+        {
+        }
+        /**
+         * Recursively collects field definitions and values for the store.
+         *
+         * Processes an array of fields, loading each field's value and adding
+         * it to the store data structure. For complex fields (repeater, group,
+         * flexible content), recurses into sub-fields to build nested values.
+         *
+         * @since 6.8.1
+         *
+         * @param array   $fields          Array of field arrays.
+         * @param integer $post_id         The post ID to load values for.
+         * @param string  $field_group_key The parent field group's key.
+         * @param array   $store_data      Reference to the store data being built.
+         * @return void
+         */
+        public function collect_field_data($fields, $post_id, $field_group_key, &$store_data)
+        {
+        }
+        /**
+         * Registers sub-field definitions in the store (without loading values).
+         *
+         * Sub-field values are stored as part of their parent's value structure,
+         * but their definitions need to be in the store for metadata access.
+         *
+         * @since 6.8.1
+         *
+         * @param array  $sub_fields      Array of sub-field arrays.
+         * @param string $field_group_key The parent field group's key.
+         * @param array  $store_data      Reference to the store data being built.
+         * @return void
+         */
+        public function register_sub_fields($sub_fields, $field_group_key, &$store_data)
+        {
+        }
+        /**
+         * Serializes a field value into the structure expected by the JS store.
+         *
+         * For simple fields, returns the raw value. For complex fields (repeater,
+         * group, flexible content), builds a nested structure matching the ACF
+         * REST API format.
+         *
+         * @since 6.8.1
+         *
+         * @param array   $field   The field array.
+         * @param mixed   $value   The raw field value.
+         * @param integer $post_id The post ID.
+         * @return mixed The serialized value.
+         */
+        public function serialize_field_value($field, $value, $post_id)
+        {
+        }
+        /**
+         * Serializes a repeater field value.
+         *
+         * acf_get_value() returns the loaded value from the repeater's load_value()
+         * method -- an array of rows keyed by sub-field key, not the raw row count
+         * stored in the database.
+         *
+         * @since 6.8.1
+         *
+         * @param array   $field   The repeater field array.
+         * @param mixed   $value   The loaded value (array of rows from load_value).
+         * @param integer $post_id The post ID.
+         * @return array Array of row objects.
+         */
+        public function serialize_repeater_value($field, $value, $post_id)
+        {
+        }
+        /**
+         * Serializes a group field value.
+         *
+         * When called from a parent complex field (repeater, flex content), $value
+         * is the already-loaded array from load_value() keyed by sub-field key.
+         * For top-level groups, $value may also be a loaded array. Falls back to
+         * loading from the database when the loaded value is not available.
+         *
+         * @since 6.8.1
+         *
+         * @param array   $field   The group field array.
+         * @param mixed   $value   The loaded value (array of sub-field values, or raw).
+         * @param integer $post_id The post ID.
+         * @return array|\stdClass Associative array of sub-field values keyed by field key.
+         */
+        public function serialize_group_value($field, $value, $post_id)
+        {
+        }
+        /**
+         * Serializes a flexible content field value.
+         *
+         * acf_get_value() returns the loaded value from the flex content's
+         * load_value() method -- an array of layout row objects, each containing
+         * an 'acf_fc_layout' key and sub-field values keyed by field key.
+         *
+         * @since 6.8.1
+         *
+         * @param array   $field   The flexible content field array.
+         * @param mixed   $value   The loaded value (array of layout rows from load_value).
+         * @param integer $post_id The post ID.
+         * @return array Array of layout objects.
+         */
+        public function serialize_flexible_content_value($field, $value, $post_id)
+        {
+        }
+    }
+    /**
+     * Handles ACF datastore saves during Gutenberg / REST post requests.
+     *
+     * Decodes the _acf transport meta included on REST post requests, writes
+     * individual field meta to the post and (when applicable) to the revision,
+     * then cleans up the transport blob. Also strips the transport blob from
+     * REST responses so it never leaks to clients.
+     */
+    class REST_Save
+    {
+        /**
+         * Constructor.
+         *
+         * Defers hook registration to rest_api_init so the
+         * acf/settings/enable_datastore filter is available to themes
+         * and plugins by the time the gate is evaluated.
+         *
+         * @since 6.8.1
+         */
+        public function __construct()
+        {
+        }
+        /**
+         * Returns true when the current request is the meta-box-loader AJAX
+         * and the datastore is enabled.
+         *
+         * @since 6.8.1
+         *
+         * @param boolean $skip    Whether the save should be skipped.
+         * @param integer $post_id The post ID being saved.
+         * @param mixed   $post    The post being saved.
+         * @return boolean
+         */
+        public function skip_metabox_loader_save($skip, $post_id, $post)
+        {
+        }
+        /**
+         * Conditionally registers REST save hooks for all public post types.
+         *
+         * @since 6.8.1
+         *
+         * @return void
+         * @phpstan-return void
+         */
+        public function maybe_register_rest_save_hooks()
+        {
+        }
+        /**
+         * Writes ACF field values to the revision after WordPress creates it.
+         *
+         * Called via _wp_put_post_revision, which fires AFTER rest_after_insert
+         * (where save_post_rest writes values to the post). At this point the
+         * decoded values are available in $this->current_acf_values.
+         *
+         * @since 6.8.1
+         *
+         * @param integer $revision_id The revision ID.
+         * @param integer $post_id     The parent post ID.
+         * @return void
+         * @phpstan-return void
+         */
+        public function save_revision_meta($revision_id, $post_id)
+        {
+        }
+        /**
+         * Processes ACF field values from the REST request.
+         * Decodes the _acf blob and saves individual meta keys to the post.
+         *
+         * Revision meta is handled separately by save_revision_meta(), which
+         * fires later via _wp_put_post_revision after WordPress creates the
+         * revision inside wp_after_insert_post().
+         *
+         * @since 6.8.1
+         *
+         * @param \WP_Post         $post    The post object.
+         * @param \WP_REST_Request $request The REST request.
+         * @return void
+         * @phpstan-return void
+         */
+        public function save_post_rest($post, $request)
+        {
+        }
+        /**
+         * Handles ACF values during autosave REST requests.
+         *
+         * @since 6.8.1
+         *
+         * @param \WP_REST_Response $response The response object.
+         * @param \WP_Post          $post     The post object.
+         * @param \WP_REST_Request  $request  The REST request.
+         * @return \WP_REST_Response
+         */
+        public function save_autosave_rest($response, $post, $request)
+        {
+        }
+        /**
+         * Cleans up the transport-only _acf meta after the revision system finishes.
+         *
+         * Hooked to wp_after_insert_post at priority 20, which runs after
+         * wp_save_post_revision_on_insert (priority 9). This catches orphaned
+         * _acf when no revision is created (e.g., post type doesn't support
+         * revisions). When a revision IS created, save_revision_meta() already
+         * deleted _acf, so this is a harmless no-op.
+         *
+         * @since 6.8.1
+         *
+         * @param integer $post_id The post ID.
+         * @return void
+         * @phpstan-return void
+         */
+        public function cleanup_acf_transport_meta($post_id)
+        {
+        }
+        /**
+         * Strips _acf from post REST responses.
+         *
+         * The _acf meta is transport-only and should not appear in post
+         * responses. Revision responses use rest_prepare_revision instead,
+         * so _acf passes through for the revision viewer.
+         *
+         * @since 6.8.1
+         *
+         * @param \WP_REST_Response $response The response object.
+         * @return \WP_REST_Response
+         */
+        public function strip_acf_transport_meta($response)
+        {
+        }
+    }
+    /**
+     * ACF datastore integration with the WordPress revisions system.
+     *
+     * Registers the _acf transport meta as a revisioned key so changes to ACF
+     * field values trigger revision creation, and short-circuits the legacy
+     * metabox-AJAX-driven revision path during REST requests (where REST_Save
+     * is in charge instead).
+     */
+    class Revisions
+    {
+        /**
+         * Constructor.
+         *
+         * register_meta is deferred to the `init` hook so themes and plugins
+         * have a chance to filter `acf/settings/enable_datastore` before the
+         * gate is evaluated.
+         *
+         * @since 6.8.1
+         */
+        public function __construct()
+        {
+        }
+        /**
+         * Registers the _acf transport meta when the datastore is enabled.
+         *
+         * _acf carries field values in the REST request. revisions_enabled is
+         * false here -- _acf is conditionally added to wp_post_revision_meta_keys
+         * only during REST requests so it triggers revision creation without
+         * causing duplicate revisions from the metabox AJAX (meta-box-loader)
+         * that follows each REST save. _acf is stripped from non-revision REST
+         * responses via rest_prepare_{post_type} in REST_Save.
+         *
+         * @since 6.8.1
+         *
+         * @return void
+         */
+        public function register_meta()
+        {
+        }
+        /**
+         * Adds _acf to the list of revisioned meta keys during REST requests.
+         *
+         * _acf triggers revision creation when ACF values change. During the
+         * metabox AJAX (meta-box-loader) that follows each Gutenberg REST save,
+         * _acf must not be compared -- wp_update_post() fires again for metabox
+         * re-rendering and would create a duplicate revision.
+         *
+         * @since 6.8.1
+         *
+         * @param array $keys The meta keys that should be revisioned.
+         * @return array
+         */
+        public function add_acf_to_revision_meta_keys($keys)
+        {
+        }
+        /**
+         * Tells acf_revisions to skip the legacy metabox handling on REST requests.
+         *
+         * Hooked to the acf/revisions/skip_legacy_metabox_handling filter. During
+         * a REST save, REST_Save copies field values to the post and revision,
+         * so the legacy metabox-AJAX-driven path in acf_revisions must not run.
+         *
+         * @since 6.8.1
+         *
+         * @param boolean $skip Whether to skip the legacy handling.
+         * @return boolean
+         */
+        public function skip_during_rest($skip)
+        {
+        }
     }
 }
 namespace ACF\Pro\Fields\FlexibleContent {
@@ -15778,7 +18076,7 @@ namespace ACF\Pro\Forms {
          *
          * @return boolean
          */
-        public function is_hpos_enabled(): bool
+        public function is_hpos_enabled() : bool
         {
         }
         /**
@@ -15835,7 +18133,7 @@ namespace ACF\Pro\Meta {
          * @param integer|string $object_id The ID of the object to get meta from.
          * @return array
          */
-        public function get_meta($object_id = 0): array
+        public function get_meta($object_id = 0) : array
         {
         }
         /**
@@ -15910,7 +18208,7 @@ namespace ACF\Pro\Meta {
          * @param array          $field     The field array.
          * @return boolean
          */
-        public function delete_value($object_id = 0, array $field = array()): bool
+        public function delete_value($object_id = 0, array $field = array()) : bool
         {
         }
         /**
@@ -15922,12 +18220,82 @@ namespace ACF\Pro\Meta {
          * @param string         $field_name The name of the field to delete the reference from.
          * @return boolean
          */
-        public function delete_reference($object_id = 0, string $field_name = ''): bool
+        public function delete_reference($object_id = 0, string $field_name = '') : bool
         {
         }
     }
 }
 namespace ACF\Site_Health {
+    /**
+     * AI Usage
+     *
+     * Logs information about ACF AI/Abilities usage for the ACF Site Health report.
+     * Measures opt-in, potential (AI-ready objects), discovery (browsing), and utility (execution).
+     */
+    class AI_Usage
+    {
+        /**
+         * Constructs the class.
+         *
+         * @since 6.8.0
+         *
+         * @param Site_Health $site_health An instance of Site_Health.
+         * @return void
+         */
+        public function __construct(\ACF\Site_Health\Site_Health $site_health)
+        {
+        }
+        /**
+         * Initializes the class on init if the ACF Abilities API is available.
+         *
+         * @since 6.8.0
+         *
+         * @return void
+         * @phpstan-return void
+         */
+        public function init()
+        {
+        }
+        /**
+         * Log execution events (when agents execute ACF abilities).
+         *
+         * Hooks into wp_after_execute_ability to log successful ability executions.
+         *
+         * @since 6.8.0
+         *
+         * @param string $ability_name The namespaced ability name.
+         * @param mixed  $input        The input data passed to the ability.
+         * @param mixed  $result       The result returned by the ability.
+         * @return void
+         * @phpstan-return void
+         */
+        public function log_execution(string $ability_name, $input, $result)
+        {
+        }
+        /**
+         * Get AI-ready object counts for Site Health display.
+         *
+         * @since 6.8.0
+         *
+         * @param array $field_groups An array of ACF field groups.
+         * @param array $post_types   An array of ACF post types.
+         * @param array $taxonomies   An array of ACF taxonomies.
+         * @return array Counts of AI-ready objects by type.
+         */
+        public function get_ai_ready_counts($field_groups, $post_types, $taxonomies) : array
+        {
+        }
+        /**
+         * Get the usage metrics for Site Health display.
+         *
+         * @since 6.8.0
+         *
+         * @return array The usage metrics.
+         */
+        public function get_usage_metrics() : array
+        {
+        }
+    }
     /**
      * The ACF Site Health class responsible for populating ACF debug information in WordPress Site Health.
      */
@@ -15954,7 +18322,7 @@ namespace ACF\Site_Health {
          *
          * @return array
          */
-        public function get_site_health(): array
+        public function get_site_health() : array
         {
         }
         /**
@@ -15965,7 +18333,7 @@ namespace ACF\Site_Health {
          * @param array $data An array of site health information to update.
          * @return boolean
          */
-        public function update_site_health(array $data = array()): bool
+        public function update_site_health(array $data = array()) : bool
         {
         }
         /**
@@ -15976,7 +18344,23 @@ namespace ACF\Site_Health {
          * @param array $data Data to update with (optional).
          * @return boolean
          */
-        public function update_site_health_data(array $data = array()): bool
+        public function update_site_health_data(array $data = array()) : bool
+        {
+        }
+        /**
+         * Logs the first-run timestamp of a WP-CLI command.
+         *
+         * Stores an associative array under the `event_cli_commands` key in the
+         * site health option. Each entry maps a full command name (e.g.
+         * "acf json import") to the Unix timestamp when it was first executed.
+         * Subsequent calls for the same command are no-ops.
+         *
+         * @since 6.8
+         *
+         * @param string $command The full CLI command name (e.g. "acf json import").
+         * @return boolean True if a new entry was written, false if already recorded.
+         */
+        public function log_cli_command(string $command) : bool
         {
         }
         /**
@@ -15987,7 +18371,7 @@ namespace ACF\Site_Health {
          * @param string $event_name The name of the event to push.
          * @return boolean
          */
-        public function add_site_health_event(string $event_name = ''): bool
+        public function add_site_health_event(string $event_name = '') : bool
         {
         }
         /**
@@ -16001,6 +18385,25 @@ namespace ACF\Site_Health {
         {
         }
         /**
+         * Logs when a site first registers an ACF Block.
+         *
+         * Only sets the event when the stored registered_acf_blocks count
+         * transitions from 0 to a positive number. Requires a previously
+         * stored count of 0 to avoid backfilling existing users. Tracks a
+         * has_had_blocks flag to prevent false positives when users remove
+         * all blocks and later re-add them.
+         *
+         * @since 6.8
+         *
+         * @param array $site_health The previously stored site health data.
+         * @param array $updated     The updated site health data. This array may be modified to include the first registered block event timestamp.
+         * @return void
+         * @phpstan-return void
+         */
+        public function maybe_log_first_registered_block(array $site_health, array &$updated) : void
+        {
+        }
+        /**
          * Adds events when ACF internal post types are created.
          *
          * @since 6.3
@@ -16008,7 +18411,7 @@ namespace ACF\Site_Health {
          * @param array $post The post about to be updated.
          * @return array
          */
-        public function pre_update_acf_internal_cpt(array $post = array()): array
+        public function pre_update_acf_internal_cpt(array $post = array()) : array
         {
         }
         /**
@@ -16019,7 +18422,7 @@ namespace ACF\Site_Health {
          * @param array $debug_info The current debug info for site health.
          * @return array The debug info appended with the ACF section.
          */
-        public function render_tab_content(array $debug_info): array
+        public function render_tab_content(array $debug_info) : array
         {
         }
         /**
@@ -16029,9 +18432,94 @@ namespace ACF\Site_Health {
          *
          * @return array
          */
-        public function get_site_health_values(): array
+        public function get_site_health_values() : array
         {
         }
+    }
+}
+/**
+ * @package ACF
+ * @author  WP Engine
+ *
+ * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
+ * "ACF" is a trademark of WP Engine.
+ * Licensed under the GNU General Public License v2 or later.
+ * https://www.gnu.org/licenses/gpl-2.0.html
+ */
+/**
+ * Applying auto inline editing to ACF blocks.
+ *
+ * @package ACF
+ */
+namespace ACF\Blocks\AutoInlineEditing {
+    /**
+     * Returns an array of field type names which support contenteditable (allows typing text) attribute.
+     *
+     * @return array
+     */
+    function get_allowed_contenteditable_fields() : array
+    {
+    }
+    /**
+     * Returns an array of field type names will be ignored by the automatic application of inline editing attributes.
+     *
+     * @return array
+     */
+    function get_non_auto_inline_editing_fields() : array
+    {
+    }
+    /**
+     * This function populates a global variable called acf_fields_used_in_block_render_template, which is an array
+     * where each key is the value entered for the field, and the value is the field data, including the current value.
+     *
+     * @param mixed  $field_value The field_value.
+     * @param string $post_id     The post ID for this value.
+     * @param array  $field       The field array.
+     *
+     * @return mixed
+     */
+    function populate_auto_inline_editing_values($field_value, $post_id, $field)
+    {
+    }
+    /**
+     * Applies inline editing attributes to dom elements if they contain field values.
+     *
+     * @param string        $path       The path to the render template for this block.
+     * @param array         $block      The block data.
+     * @param string        $content    The block content.
+     * @param boolean       $is_preview Whether we are in the block editor or not.
+     * @param integer       $post_id    The current post being edited or viewed.
+     * @param WP_Block|null $wp_block   The block instance (since WP 5.5).
+     * @param array         $context    The block context array.
+     * @return string
+     */
+    function apply_inline_editing_attributes_to_render_template($path, $block, $content, $is_preview, $post_id, $wp_block, $context) : string
+    {
+    }
+    /**
+     * Applies inline editing attributes to dom elements if they contain field values.
+     *
+     * @param string        $render_callback The callback function that renders the block preview/output.
+     * @param array         $block           The block data.
+     * @param string        $content         The block content.
+     * @param boolean       $is_preview      Whether we are in the block editor or not.
+     * @param integer       $post_id         The current post being edited or viewed.
+     * @param WP_Block|null $wp_block        The block instance (since WP 5.5).
+     * @param array         $context         The block context array.
+     * @return string
+     */
+    function apply_inline_editing_attributes_to_render_callback($render_callback, $block, $content, $is_preview, $post_id, $wp_block, $context) : string
+    {
+    }
+    /**
+     * Applies inline editing attributes to dom elements if they contain field values.
+     *
+     * @param string $html_string The HTML string being processed.
+     * @param array  $block       The block data.
+     * @return string
+     */
+    function apply_inline_editing_attributes_to_html_string($html_string, $block) : string
+    {
     }
 }
 namespace {
@@ -16114,9 +18602,13 @@ namespace {
     {
     }
     /**
-     * General functions relating to the bidirectional feature of some fields.
-     *
      * @package ACF
+     * @author  WP Engine
+     *
+     * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
+     * "ACF" is a trademark of WP Engine.
+     * Licensed under the GNU General Public License v2 or later.
+     * https://www.gnu.org/licenses/gpl-2.0.html
      */
     /**
      * Process updating bidirectional fields.
@@ -16729,6 +19221,26 @@ namespace {
     {
     }
     /**
+     * Retrieves the JSON schema for a field.
+     *
+     * @since 6.8.0
+     *
+     * @param string $field_type The field to get the JSON schema for.
+     * @return array
+     */
+    function acf_get_field_json_schema(string $field_type) : array
+    {
+    }
+    /**
+     * @package ACF
+     * @author  WP Engine
+     *
+     * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
+     * "ACF" is a trademark of WP Engine.
+     * Licensed under the GNU General Public License v2 or later.
+     * https://www.gnu.org/licenses/gpl-2.0.html
+     */
+    /**
      * acf_get_field_group
      *
      * Retrieves a field group for the given identifier.
@@ -17121,6 +19633,17 @@ namespace {
     {
     }
     /**
+     * Retrieves the field group title, or display title if set.
+     *
+     * @since 6.6
+     *
+     * @param array|integer $field_group The field group array or ID.
+     * @return string The field group title.
+     */
+    function acf_get_field_group_title($field_group) : string
+    {
+    }
+    /**
      * acf_set_form_data
      *
      * Sets data about the current form.
@@ -17193,6 +19716,15 @@ namespace {
     function _acf_do_save_post($post_id = 0)
     {
     }
+    /**
+     * @package ACF
+     * @author  WP Engine
+     *
+     * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
+     * "ACF" is a trademark of WP Engine.
+     * Licensed under the GNU General Public License v2 or later.
+     * https://www.gnu.org/licenses/gpl-2.0.html
+     */
     /**
      * Returns true if the value provided is considered "empty". Allows numbers such as 0.
      *
@@ -17727,6 +20259,15 @@ namespace {
     {
     }
     /**
+     * @package ACF
+     * @author  WP Engine
+     *
+     * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
+     * "ACF" is a trademark of WP Engine.
+     * Licensed under the GNU General Public License v2 or later.
+     * https://www.gnu.org/licenses/gpl-2.0.html
+     */
+    /**
      * acf_filter_attrs
      *
      * Filters out empty attrs from the provided array.
@@ -18076,15 +20617,19 @@ namespace {
     {
     }
     /**
-     * Generic functions for accessing ACF objects stored as WordPress post types which aren't handled by type specific functions.
-     *
      * @package ACF
+     * @author  WP Engine
+     *
+     * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
+     * "ACF" is a trademark of WP Engine.
+     * Licensed under the GNU General Public License v2 or later.
+     * https://www.gnu.org/licenses/gpl-2.0.html
      */
     /**
      * Gets an instance of an ACF_Internal_Post_Type.
      *
      * @param string $post_type The ACF internal post type to get the instance for.
-     * @return ACF_Internal_Post_Type|bool The internal post type class instance, or false on failure.
+     * @return ACF_Internal_Post_Type|boolean The internal post type class instance, or false on failure.
      */
     function acf_get_internal_post_type_instance($post_type = 'acf-field-group')
     {
@@ -18481,6 +21026,15 @@ namespace {
     {
     }
     /**
+     * @package ACF
+     * @author  WP Engine
+     *
+     * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
+     * "ACF" is a trademark of WP Engine.
+     * Licensed under the GNU General Public License v2 or later.
+     * https://www.gnu.org/licenses/gpl-2.0.html
+     */
+    /**
      * Returns an array of "ACF only" meta for the given post_id.
      *
      * @date    9/10/18
@@ -18637,7 +21191,7 @@ namespace {
      * @param string $type The meta type as decoded from the post ID.
      * @return object|null
      */
-    function acf_get_meta_instance(string $type): ?object
+    function acf_get_meta_instance(string $type) : ?object
     {
     }
     /**
@@ -18681,6 +21235,15 @@ namespace {
     {
     }
     /**
+     * @package ACF
+     * @author  WP Engine
+     *
+     * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
+     * "ACF" is a trademark of WP Engine.
+     * Licensed under the GNU General Public License v2 or later.
+     * https://www.gnu.org/licenses/gpl-2.0.html
+     */
+    /**
      * Returns available templates for each post type.
      *
      * @date    29/8/17
@@ -18693,9 +21256,13 @@ namespace {
     {
     }
     /**
-     * Functions for ACF post type objects.
-     *
      * @package ACF
+     * @author  WP Engine
+     *
+     * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
+     * "ACF" is a trademark of WP Engine.
+     * Licensed under the GNU General Public License v2 or later.
+     * https://www.gnu.org/licenses/gpl-2.0.html
      */
     /**
      * Get an ACF CPT as an array
@@ -18949,9 +21516,13 @@ namespace {
     {
     }
     /**
-     * Functions for ACF taxonomy objects.
-     *
      * @package ACF
+     * @author  WP Engine
+     *
+     * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
+     * "ACF" is a trademark of WP Engine.
+     * Licensed under the GNU General Public License v2 or later.
+     * https://www.gnu.org/licenses/gpl-2.0.html
      */
     /**
      * Get an ACF taxonomy as an array
@@ -19193,6 +21764,15 @@ namespace {
     function acf_import_taxonomy(array $taxonomy)
     {
     }
+    /**
+     * @package ACF
+     * @author  WP Engine
+     *
+     * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
+     * "ACF" is a trademark of WP Engine.
+     * Licensed under the GNU General Public License v2 or later.
+     * https://www.gnu.org/licenses/gpl-2.0.html
+     */
     /**
      * acf_get_users
      *
@@ -19493,6 +22073,15 @@ namespace {
     {
     }
     /**
+     * @package ACF
+     * @author  WP Engine
+     *
+     * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
+     * "ACF" is a trademark of WP Engine.
+     * Licensed under the GNU General Public License v2 or later.
+     * https://www.gnu.org/licenses/gpl-2.0.html
+     */
+    /**
      * Returns a WordPress object type.
      *
      * @date    1/4/20
@@ -19638,6 +22227,15 @@ namespace {
     function acf_print_menu_section($menu_items, $section = '')
     {
     }
+    /**
+     * @package ACF
+     * @author  WP Engine
+     *
+     * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
+     * "ACF" is a trademark of WP Engine.
+     * Licensed under the GNU General Public License v2 or later.
+     * https://www.gnu.org/licenses/gpl-2.0.html
+     */
     /**
      * This function will return true for a non empty array
      *
@@ -20626,7 +23224,21 @@ namespace {
      * @param integer $post_id The post ID to check.
      * @return boolean
      */
-    function acf_current_user_can_edit_post(int $post_id): bool
+    function acf_current_user_can_edit_post(int $post_id) : bool
+    {
+    }
+    /**
+     * Checks if the current user can edit a given ACF context.
+     *
+     * Handles post, user, term, comment, woo_order, block, and option contexts returned by acf_decode_post_id().
+     *
+     * @since 6.7.2
+     *
+     * @param array  $post_id_info      The result of acf_decode_post_id(), containing 'type' and 'id'.
+     * @param string $options_page_slug Optional. The options page menu slug, used to look up the page's capability.
+     * @return boolean
+     */
+    function acf_current_user_can_edit_in_context(array $post_id_info, string $options_page_slug = '') : bool
     {
     }
     /**
@@ -21127,9 +23739,18 @@ namespace {
      * @param   boolean $enable_meta_box_cb_edit Can the current user edit metabox callbacks.
      * @return  boolean
      */
-    function acf_settings_enable_meta_box_cb_edit($enable_meta_box_cb_edit): bool
+    function acf_settings_enable_meta_box_cb_edit($enable_meta_box_cb_edit) : bool
     {
     }
+    /**
+     * @package ACF
+     * @author  WP Engine
+     *
+     * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
+     * "ACF" is a trademark of WP Engine.
+     * Licensed under the GNU General Public License v2 or later.
+     * https://www.gnu.org/licenses/gpl-2.0.html
+     */
     /**
      * This function will return a custom field value for a specific field name/key + post_id.
      * There is a 3rd parameter to turn on/off formating. This means that an image field will not use
@@ -21598,6 +24219,15 @@ namespace {
     function acf_filter_post_id($post_id)
     {
     }
+    /**
+     * @package ACF
+     * @author  WP Engine
+     *
+     * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
+     * "ACF" is a trademark of WP Engine.
+     * Licensed under the GNU General Public License v2 or later.
+     * https://www.gnu.org/licenses/gpl-2.0.html
+     */
     /**
      * Returns an array of taxonomy names.
      *
@@ -22980,6 +25610,15 @@ namespace {
     {
     }
     /**
+     * @package ACF
+     * @author  WP Engine
+     *
+     * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
+     * "ACF" is a trademark of WP Engine.
+     * Licensed under the GNU General Public License v2 or later.
+     * https://www.gnu.org/licenses/gpl-2.0.html
+     */
+    /**
      * Get the REST API schema for a given field.
      *
      * @param array $field
@@ -23042,6 +25681,15 @@ namespace {
     function acf_get_post_latest_revision($post_id)
     {
     }
+    /**
+     * @package ACF
+     * @author  WP Engine
+     *
+     * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
+     * "ACF" is a trademark of WP Engine.
+     * Licensed under the GNU General Public License v2 or later.
+     * https://www.gnu.org/licenses/gpl-2.0.html
+     */
     /**
      * acf_has_upgrade
      *
@@ -23285,9 +25933,13 @@ namespace {
     {
     }
     /**
-     * Helper/wrapper Functions for ACF UI Options pages.
-     *
      * @package ACF
+     * @author  WP Engine
+     *
+     * © 2026 Advanced Custom Fields (ACF®). All rights reserved.
+     * "ACF" is a trademark of WP Engine.
+     * Licensed under the GNU General Public License v2 or later.
+     * https://www.gnu.org/licenses/gpl-2.0.html
      */
     /**
      * Get an ACF UI options page as an array
@@ -23593,6 +26245,41 @@ namespace {
     {
     }
     /**
+     * Recursively ensures every field in a set of block-inlined fields has a key,
+     * generating `field_{block_slug}_{parent_path}_{name}` for any that don't.
+     * The parent path scopes sub-field keys under their ancestor names so that two
+     * fields with the same `name` at different depths (e.g. a top-level `title`
+     * and a repeater sub-field `title`) don't end up with the same field key and
+     * overwrite each other in the local fields store. Invalid field definitions
+     * (missing a name) are skipped and reported via _doing_it_wrong().
+     *
+     * @since 6.8.1
+     *
+     * @param array  $fields      The fields to process.
+     * @param string $block_slug  The sanitized block slug used to build keys.
+     * @param string $block_name  The original block name (used for error messages).
+     * @param string $parent_path Internal. Underscore-joined ancestor names for the current nesting level.
+     * @return array The processed fields, with keys filled in and invalid entries removed.
+     */
+    function acf_block_json_process_fields($fields, $block_slug, $block_name = '', $parent_path = '')
+    {
+    }
+    /**
+     * Registers a local field group for a block from an inline fields array,
+     * as used by `acf.fields` in block.json and `fields` in acf_register_block_type().
+     *
+     * @since 6.8.1
+     *
+     * @param string $block_name        The full block name (e.g. 'acf/my-block').
+     * @param string $block_title       The block's display title, used in the default group title.
+     * @param array  $fields            The fields defined inline on the block.
+     * @param string $field_group_title Optional. Overrides the auto-generated "Block: {title}" group title.
+     * @return boolean True if the field group was registered, false otherwise.
+     */
+    function acf_register_block_field_group_from_fields($block_name, $block_title, $fields, $field_group_title = '')
+    {
+    }
+    /**
      * Registers a block type.
      *
      * @date    18/2/19
@@ -23747,6 +26434,34 @@ namespace {
     {
     }
     /**
+     * Returns the rendered block HTML for v3 blocks.
+     *
+     * @date    21/1/26
+     * @since   6.8
+     *
+     * @param   array    $attributes The block attributes.
+     * @param   string   $content    The block content.
+     * @param   boolean  $is_preview Whether or not the block is being rendered for editing preview.
+     * @param   integer  $post_id    The current post being edited or viewed.
+     * @param   WP_Block $wp_block   The block instance (since WP 5.5).
+     * @param   array    $context    The block context array.
+     * @return  string   The block HTML.
+     */
+    function acf_rendered_block_v3($attributes, $content = '', $is_preview = \false, $post_id = 0, $wp_block = \null, $context = \false)
+    {
+    }
+    /**
+     * Replaces InnerBlocks strings in a block with the inner block content.
+     *
+     * @since 6.8
+     * @param string $content The block content.
+     * @param string $html    The block html.
+     * @return string
+     */
+    function acf_replace_inner_blocks_in_block_content($content, $html)
+    {
+    }
+    /**
      * Renders the block HTML.
      *
      * @since   5.7.12
@@ -23792,6 +26507,15 @@ namespace {
      * @return  void
      */
     function acf_enqueue_block_assets()
+    {
+    }
+    /**
+     * Enqueues scripts and styles to load inside the block editor iframe.
+     * This allows us to do things like style contenteditable, and other inline editing elements.
+     *
+     * @since   6.7
+     */
+    function acf_enqueue_in_iframe_styles()
     {
     }
     /**
@@ -23968,7 +26692,7 @@ namespace {
      * @param array $block The block to check.
      * @return boolean
      */
-    function acf_block_uses_post_meta($block): bool
+    function acf_block_uses_post_meta($block) : bool
     {
     }
     /**
@@ -24006,6 +26730,98 @@ namespace {
      * @return array An array containing the field values that need to be saved.
      */
     function acf_get_block_meta_values_to_save($content = '')
+    {
+    }
+    /**
+     * Helper function that returns the HTML attributes required for toolbar inline editing as a string, escaped and ready for output.
+     *
+     * @param array $fields Array {
+     * Required. A list of the fields, each of which which will be displayed in the popup toolbar.
+     *
+     * Each field can be passed as:
+     *
+     * - A string (e.g. `'my_field_name'`)
+     * - An associative array with specific keys:
+     * @type string  $field_name  The name of the field to display in the toolbar.
+     * @type string  $field_icon  An html tag, can be an svg, to be used as the toolbar icon. If not passed, the icon of the first field will be used.
+     * @type string  $field_label A string to use as the label for the button in the toolbar.
+     * @type boolean $use_expanded_editor Default is false, which opens the field in the popover. Set to true to open in the expanded editor.
+     * @type string  $popover_min_width Enter the CSS width value to use for the popover. Default is "300px".
+     * }
+     *
+     * @param array $args   Array {
+     * Optional. An array of additional args which can control how the toolbar is displayed and used.
+     *
+     * @type string $toolbar_icon  Optional. An html tag, can be an svg, to be used as the toolbar icon. If not passed, the icon of the first field will be used.
+     * @type string $toolbar_title Optional. A string to be used as the toolbar title. If not passed, the name of the first field will be used.
+     * @type string $uid           Optional. A unique identifier that isn't used by any other inline fields in this block. Pass if you have 2 elements that conflict.
+     * }
+     *
+     * @return string A string containing the attributes.
+     */
+    function acf_inline_toolbar_editing_attrs($fields, $args = array()) : string
+    {
+    }
+    /**
+     * Helper function that returns the HTML attributes required for inline text editing as a string, escaped and ready for output.
+     *
+     * @param string $field_name A string which is the name of the field to update when the user types into the HTML element.
+     *
+     * @param array  $args       Array {
+     * Optional. An array of additional args which can control how the popover identifier is displayed.
+     *
+     * @type string $toolbar_icon  Optional. An html tag, can be an svg, to be used as the toolbar icon. If not passed, the icon of the first field will be used.
+     * @type string $toolbar_title Optional. A string to be used as the toolbar title. If not passed, the name of the first field will be used.
+     * @type string $placeholder   Optional. Optional. A string which will be used as the placeholder in the typable text area.
+     * }
+     *
+     * @return string A string containing the attributes.
+     */
+    function acf_inline_text_editing_attrs($field_name, $args = array()) : string
+    {
+    }
+    /**
+     * This function prepares a fields array for being localized and used on the frontend as block toolbar fields.
+     *
+     * @param array $fields Array {
+     * Required. A list of the fields, each of which which will be displayed in the popup toolbar.
+     *
+     * Each field can be passed as:
+     *
+     * - A string (e.g. `'my_field_name'`)
+     * - An associative array with specific keys:
+     * @type string $field_name  The name of the field to display in the toolbar.
+     * @type string $field_icon  An html tag, can be an svg, to be used as the toolbar icon. If not passed, the icon of the first field will be used.
+     * @type string $field_label A string to use as the label for the button in the toolbar.
+     * }
+     *
+     * @return array The array of fields, prepared for JS localization.
+     */
+    function acf_process_block_toolbar_fields($fields)
+    {
+    }
+    /**
+     * Helper function for block render templates to check if an acf field has a value.
+     * This is relevant when autoInlineEditing is enabled for a block, because empty fields
+     * will have acf_auto_inline_editing_field_name_ + field_name as their value if they are empty.
+     *
+     * @param  string $field_name True if the field is empty, false if it has a value.
+     * @return boolean True if the field is empty, false if it has a value.
+     */
+    function acf_inline_editing_field_is_empty($field_name)
+    {
+    }
+    /**
+     * Whether the ACF datastore is enabled.
+     *
+     * The datastore requires WordPress 6.7+ and can be enabled via the
+     * `acf/settings/enable_datastore` filter.
+     *
+     * @since 6.8.1
+     *
+     * @return boolean
+     */
+    function acf_is_using_datastore()
     {
     }
     /**
