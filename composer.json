@@ -15,7 +15,7 @@
         }
     },
     "scripts": {
-        "post-install-cmd": "@php bin/register-bsu-phplint.php",
-        "post-update-cmd": "@php bin/register-bsu-phplint.php"
+        "post-install-cmd": "@php bin/register-BSUPhpLint.php",
+        "post-update-cmd": "@php bin/register-BSUPhpLint.php"
     }
 }

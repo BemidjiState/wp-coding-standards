@@ -4,7 +4,7 @@ PHP tool binaries for BSU WordPress development. Installed via npm, ships the fo
 
 | Binary | Version | Purpose |
 |---|---|---|
-| `phpcs` | 4.x | PHP CodeSniffer — enforces bsu-phplint coding standards |
+| `phpcs` | 4.x | PHP CodeSniffer — enforces BSUPhpLint coding standards |
 | `phpcbf` | 4.x | PHP Code Beautifier — auto-fixes PHPCS violations |
 | `phpstan` | 1.x | PHPStan — static analysis for type safety and correctness |
 
