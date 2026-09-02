@@ -1,0 +1,43 @@
+# Publishes the package to GitHub Packages (npm.pkg.github.com) whenever the
+# release workflow pushes a semver tag — the tagged commit already carries the
+# matching package.json version. workflow_dispatch allows re-publishing a tag
+# by hand (run it from the tag's ref).
+name: "Release: Publish to GitHub Packages"
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout source
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          registry-url: 'https://npm.pkg.github.com'
+
+      # --ignore-scripts skips the husky prepare hook, which has no place in
+      # CI. The allow-directory override is scoped to this step: npm 11.16's
+      # pack trips the repo's allow-directory policy on the root project
+      # itself even though no directory dependency exists. There is
+      # deliberately no .npmignore: the tarball must match what the git
+      # dependency delivered — the committed vendor/ toolchain included —
+      # so the default pack rules apply. The tarball is ~59 MB.
+      - name: Publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          npm_config_allow_directory: all
+        run: npm publish --ignore-scripts
