@@ -1,5 +1,5 @@
 {
-	"name": "@bsu/wp-coding-standards",
+	"name": "@bemidjistate/wp-coding-standards",
 	"version": "3.4.4",
 	"description": "PHP tool binaries for BSU WordPress development \u2014 ships PHPCS, WPCS, PHPStan, and PHPUnit",
 	"author": "BSU|NTC Web Services",
@@ -9,6 +9,9 @@
 		"url": "git+https://github.com/BemidjiState/wp-coding-standards.git"
 	},
 	"homepage": "https://www.bemidjistate.edu",
+	"publishConfig": {
+		"registry": "https://npm.pkg.github.com"
+	},
 	"engines": {
 		"node": ">=24.12",
 		"npm": ">=11.10"
