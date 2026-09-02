@@ -1,4 +1,4 @@
-# @bsu/wp-coding-standards
+# wp-coding-standards
 
 PHP tool binaries for BSU WordPress development. Installed via npm, ships the following tools in `vendor/bin/`:
 
@@ -8,15 +8,32 @@ PHP tool binaries for BSU WordPress development. Installed via npm, ships the fo
 | `phpcbf` | 4.x | PHP Code Beautifier — auto-fixes PHPCS violations |
 | `phpstan` | 1.x | PHPStan — static analysis for type safety and correctness |
 
-## Usage in bsuwp
+## Consuming the Package
 
-These binaries are referenced directly by path in `bsuwp/package.json` scripts:
+Published to GitHub Packages as `@bemidjistate/wp-coding-standards` and
+consumed under the `@bsu/wp-coding-standards` alias, so script paths keep the
+short name:
+
+```json
+"@bsu/wp-coding-standards": "npm:@bemidjistate/wp-coding-standards@3.4.4"
+```
+
+The consumer's `.npmrc` routes the scope to GitHub Packages
+(`@bemidjistate:registry=https://npm.pkg.github.com`); installing requires a
+GitHub personal access token (classic) with `read:packages` in `~/.npmrc`,
+and CI uses its workflow `GITHUB_TOKEN` via the package's Actions access list.
+
+Consumers reference the binaries directly by path in `package.json` scripts:
 
 ```bash
-npm run lint:php        # phpcs via this package
-npm run fix:php         # phpcbf via this package
-npm run analyse:php     # phpstan via this package
+node_modules/@bsu/wp-coding-standards/vendor/bin/phpcs
+node_modules/@bsu/wp-coding-standards/vendor/bin/phpcbf
+node_modules/@bsu/wp-coding-standards/vendor/bin/phpstan
 ```
+
+There is deliberately no `.npmignore`: the published tarball carries the
+committed `vendor/` toolchain — the same content the git dependency
+delivered.
 
 ## Updating
 
